@@ -1,8 +1,8 @@
 import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calendar, ArrowLeft, ChefHat, Clock, Users } from 'lucide-react'
+import { Calendar, ArrowLeft, ChefHat, Clock, Users, Utensils } from 'lucide-react'
 import Link from "next/link"
 import sql from "@/lib/db"
 import { notFound } from 'next/navigation'
@@ -47,47 +47,107 @@ export default async function RecipeDetailPage({ params }: { params: Promise<{ s
             </Link>
           </Button>
 
-          {recipe.image && (
-            <div className="relative aspect-video w-full overflow-hidden rounded-lg shadow-lg">
-              <Image
-                src={recipe.image || "/placeholder.svg"}
-                alt={recipe.title}
-                fill
-                className="object-cover"
-              />
-            </div>
-          )}
+          <div className="space-y-6">
+            {recipe.image && (
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg shadow-lg">
+                <Image
+                  src={recipe.image || "/placeholder.svg"}
+                  alt={recipe.title}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
 
-          <div className="space-y-4">
-            <Badge>{recipe.category}</Badge>
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
-              {recipe.title}
-            </h1>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              {meta.prepTime && (
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  {meta.prepTime}
-                </div>
-              )}
-              {meta.servings && (
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  {meta.servings} servings
-                </div>
-              )}
+            <div className="space-y-4">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                {new Date(recipe.created_at).toLocaleDateString()}
+                <ChefHat className="h-6 w-6 text-primary" />
+                <Badge variant="default">{recipe.category}</Badge>
+                {meta.difficulty && <Badge variant="secondary">{meta.difficulty}</Badge>}
+              </div>
+              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
+                {recipe.title}
+              </h1>
+              
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {meta.prepTime && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <div className="font-medium">{meta.prepTime}</div>
+                      <div className="text-muted-foreground">Prep</div>
+                    </div>
+                  </div>
+                )}
+                {meta.cookTime && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Utensils className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <div className="font-medium">{meta.cookTime}</div>
+                      <div className="text-muted-foreground">Cook</div>
+                    </div>
+                  </div>
+                )}
+                {meta.servings && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <div className="font-medium">{meta.servings}</div>
+                      <div className="text-muted-foreground">Servings</div>
+                    </div>
+                  </div>
+                )}
+                {meta.calories && (
+                  <div className="flex items-center gap-2 text-sm">
+                    <div className="font-medium">{meta.calories} cal</div>
+                    <div className="text-muted-foreground">Per serving</div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
+          {meta.ingredients && Array.isArray(meta.ingredients) && meta.ingredients.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Ingredients</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ul className="space-y-2">
+                  {meta.ingredients.map((ingredient: string, index: number) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                      <span>{ingredient}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
+
           <Card>
-            <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-6">
+            <CardHeader>
+              <CardTitle>Instructions</CardTitle>
+            </CardHeader>
+            <CardContent className="prose prose-neutral dark:prose-invert max-w-none">
               <div dangerouslySetInnerHTML={{ __html: recipe.content }} />
             </CardContent>
           </Card>
+
+          {meta.tips && (
+            <Card className="border-primary/20 bg-primary/5">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ChefHat className="h-5 w-5" />
+                  Chef's Tips
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm leading-relaxed">{meta.tips}</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </article>
     </div>

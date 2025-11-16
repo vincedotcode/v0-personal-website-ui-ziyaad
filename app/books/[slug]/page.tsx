@@ -1,6 +1,6 @@
 import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar, ArrowLeft, BookOpen, User } from 'lucide-react'
 import Link from "next/link"
@@ -47,46 +47,98 @@ export default async function BookDetailPage({ params }: { params: Promise<{ slu
             </Link>
           </Button>
 
-          <div className="grid gap-8 md:grid-cols-[200px,1fr]">
+          <div className="grid gap-8 md:grid-cols-[250px,1fr]">
             {book.image && (
-              <div className="relative aspect-[2/3] w-full max-w-[200px] overflow-hidden rounded-lg shadow-lg">
-                <Image
-                  src={book.image || "/placeholder.svg"}
-                  alt={book.title}
-                  fill
-                  className="object-cover"
-                />
+              <div className="space-y-4">
+                <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg shadow-2xl">
+                  <Image
+                    src={book.image || "/placeholder.svg"}
+                    alt={book.title}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                </div>
+                {meta.amazonUrl && (
+                  <Button asChild className="w-full">
+                    <Link href={meta.amazonUrl} target="_blank" rel="noopener noreferrer">
+                      Buy on Amazon
+                    </Link>
+                  </Button>
+                )}
               </div>
             )}
             
-            <div className="space-y-4">
-              <Badge>{book.category}</Badge>
-              <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
-                {book.title}
-              </h1>
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <Badge variant="default">{book.category}</Badge>
+                <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
+                  {book.title}
+                </h1>
                 {book.author && (
-                  <div className="flex items-center gap-2">
-                    <User className="h-4 w-4" />
-                    {book.author}
-                  </div>
+                  <p className="text-xl text-muted-foreground">by {book.author}</p>
                 )}
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-4 w-4" />
-                  {new Date(book.created_at).toLocaleDateString()}
+                
+                <div className="grid gap-3 text-sm">
+                  {meta.publisher && (
+                    <div className="flex gap-2">
+                      <span className="font-medium">Publisher:</span>
+                      <span className="text-muted-foreground">{meta.publisher}</span>
+                    </div>
+                  )}
+                  {meta.publishDate && (
+                    <div className="flex gap-2">
+                      <span className="font-medium">Published:</span>
+                      <span className="text-muted-foreground">{meta.publishDate}</span>
+                    </div>
+                  )}
+                  {meta.isbn && (
+                    <div className="flex gap-2">
+                      <span className="font-medium">ISBN:</span>
+                      <span className="text-muted-foreground font-mono">{meta.isbn}</span>
+                    </div>
+                  )}
+                  {meta.pages && (
+                    <div className="flex gap-2">
+                      <span className="font-medium">Pages:</span>
+                      <span className="text-muted-foreground">{meta.pages}</span>
+                    </div>
+                  )}
+                  {meta.rating && (
+                    <div className="flex gap-2">
+                      <span className="font-medium">Rating:</span>
+                      <span className="text-muted-foreground">{'⭐'.repeat(Math.round(meta.rating))} ({meta.rating}/5)</span>
+                    </div>
+                  )}
                 </div>
               </div>
-              {meta.isbn && (
-                <p className="text-sm text-muted-foreground">ISBN: {meta.isbn}</p>
+
+              <Card>
+                <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-6">
+                  <h3>About This Book</h3>
+                  <div dangerouslySetInnerHTML={{ __html: book.content }} />
+                </CardContent>
+              </Card>
+
+              {meta.keyTakeaways && Array.isArray(meta.keyTakeaways) && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Key Takeaways</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="space-y-2">
+                      {meta.keyTakeaways.map((takeaway: string, index: number) => (
+                        <li key={index} className="flex items-start gap-2">
+                          <BookOpen className="mt-1 h-4 w-4 shrink-0 text-primary" />
+                          <span className="leading-relaxed">{takeaway}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>
-
-          <Card>
-            <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-6">
-              <div dangerouslySetInnerHTML={{ __html: book.content }} />
-            </CardContent>
-          </Card>
         </div>
       </article>
     </div>
