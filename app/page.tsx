@@ -7,6 +7,8 @@ import { ArrowRight, Download, Briefcase, Users, Shield, BookOpen, Coffee, Music
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { CardSpotlight } from "@/components/ui/card-spotlight"
+import { ExpandableCardDemo } from "@/components/ui/expandable-card"
+import Aurora from "@/components/ui/aurora"
 
 const linkedInRecommendations = [
   {
@@ -92,7 +94,14 @@ export default function HomePage() {
     <div className="relative">
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-        <RippleGridBackground />
+        <div className="absolute inset-0 z-0">
+          <Aurora
+            colorStops={["#3c847c", "#5227FF", "#3c847c"]}
+            blend={0.3}
+            amplitude={0.8}
+            speed={0.3}
+          />
+        </div>
         <div className="container relative z-10 py-24 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="flex flex-col items-center md:items-start space-y-6">
@@ -265,6 +274,20 @@ export default function HomePage() {
       </section>
 
       <section className="py-24 px-4 md:px-6 lg:px-8">
+        <div className="container max-w-7xl mx-auto">
+          <div className="mx-auto max-w-2xl text-center mb-16">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4 text-balance">
+              Featured Work
+            </h2>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              Explore some of my recent projects and achievements
+            </p>
+          </div>
+          <ExpandableCardDemo />
+        </div>
+      </section>
+
+      <section className="py-24 px-4 md:px-6 lg:px-8 bg-muted/30">
         <div className="container max-w-7xl mx-auto">
           <div className="mx-auto max-w-2xl text-center mb-16">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4 text-balance">
