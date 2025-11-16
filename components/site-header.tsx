@@ -12,7 +12,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Button } from "@/components/ui/button"
-import { Menu, X } from 'lucide-react'
+import { Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { ThemeToggle } from "@/components/theme-toggle"
 
@@ -41,7 +41,7 @@ export function SiteHeader() {
           </div>
         </Link>
 
-        <NavigationMenu className="hidden lg:flex">
+        <NavigationMenu className="hidden lg:flex" delayDuration={0}>
           <NavigationMenuList>
             {/* Gotta Do */}
             <NavigationMenuItem>
@@ -102,18 +102,21 @@ export function SiteHeader() {
 
             {/* Touch Base */}
             <NavigationMenuItem>
-              <Link href="/contact" legacyBehavior passHref>
-                <NavigationMenuLink className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+              <NavigationMenuLink
+                asChild
+                className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
+              >
+                <Link href="/touchbase">
                   Touch Base
-                </NavigationMenuLink>
-              </Link>
+                </Link>
+              </NavigationMenuLink>
             </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          
+
           <Button
             variant="ghost"
             size="icon"
@@ -148,7 +151,7 @@ export function SiteHeader() {
               <MobileNavLink href="/media">Media</MobileNavLink>
             </MobileNavSection>
 
-            <MobileNavLink href="/contact">Touch Base</MobileNavLink>
+            <MobileNavLink href="/touchbase">Touch Base</MobileNavLink>
           </nav>
         </div>
       )}
@@ -175,7 +178,7 @@ const ListItem = ({
           href={href}
           className={cn(
             "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50",
-            className
+            className,
           )}
           {...props}
         >
