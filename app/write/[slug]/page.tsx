@@ -2,7 +2,7 @@ import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calendar, ArrowLeft, Shield } from 'lucide-react'
+import { Calendar, ArrowLeft, PenTool, User } from 'lucide-react'
 import Link from "next/link"
 import sql from "@/lib/db"
 import { notFound } from 'next/navigation'
@@ -10,22 +10,22 @@ import { notFound } from 'next/navigation'
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const posts = await sql`SELECT slug FROM posts WHERE section = 'dataprotection' AND published = true`
+  const posts = await sql`SELECT slug FROM posts WHERE section = 'write' AND published = true`
   return posts.map((post) => ({
     slug: post.slug,
   }))
 }
 
-export default async function DataProtectionArticlePage({ params }: { params: { slug: string } }) {
+export default async function WritingDetailPage({ params }: { params: { slug: string } }) {
   const result = await sql`
     SELECT * FROM posts 
-    WHERE slug = ${params.slug} AND section = 'dataprotection' AND published = true 
+    WHERE slug = ${params.slug} AND section = 'write' AND published = true 
     LIMIT 1
   `
   
-  const article = result[0]
+  const writing = result[0]
 
-  if (!article) {
+  if (!writing) {
     notFound()
   }
 
@@ -35,33 +35,35 @@ export default async function DataProtectionArticlePage({ params }: { params: { 
       
       <article className="relative z-10 mx-auto max-w-7xl px-4 py-24 md:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl space-y-8">
-          {/* Back Button */}
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/data-protection">
+            <Link href="/write">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Data Protection
+              Back to Writing
             </Link>
           </Button>
 
-          {/* Header */}
           <div className="space-y-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-primary/10 text-primary">
-              <Shield className="h-8 w-8" />
-            </div>
-            <Badge>Data Protection</Badge>
+            <Badge>{writing.category}</Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
-              {article.title}
+              {writing.title}
             </h1>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              {new Date(article.created_at).toLocaleDateString()}
+            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              {writing.author && (
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  {writing.author}
+                </div>
+              )}
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                {new Date(writing.created_at).toLocaleDateString()}
+              </div>
             </div>
           </div>
 
-          {/* Content */}
           <Card>
             <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-6">
-              <div dangerouslySetInnerHTML={{ __html: article.content }} />
+              <div dangerouslySetInnerHTML={{ __html: writing.content }} />
             </CardContent>
           </Card>
         </div>

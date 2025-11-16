@@ -2,32 +2,35 @@ import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calendar, ArrowLeft, User } from 'lucide-react'
+import { Calendar, ArrowLeft, ChefHat, Clock, Users } from 'lucide-react'
 import Link from "next/link"
 import sql from "@/lib/db"
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const posts = await sql`SELECT slug FROM posts WHERE section = 'blog' AND published = true`
+  const posts = await sql`SELECT slug FROM posts WHERE section = 'cook' AND published = true`
   return posts.map((post) => ({
     slug: post.slug,
   }))
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
+export default async function RecipeDetailPage({ params }: { params: { slug: string } }) {
   const result = await sql`
     SELECT * FROM posts 
-    WHERE slug = ${params.slug} AND section = 'blog' AND published = true 
+    WHERE slug = ${params.slug} AND section = 'cook' AND published = true 
     LIMIT 1
   `
   
-  const post = result[0]
+  const recipe = result[0]
 
-  if (!post) {
+  if (!recipe) {
     notFound()
   }
+
+  const meta = recipe.meta || {}
 
   return (
     <div className="relative min-h-screen">
@@ -35,38 +38,52 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
       
       <article className="relative z-10 mx-auto max-w-7xl px-4 py-24 md:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl space-y-8">
-          {/* Back Button */}
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/blog">
+            <Link href="/cook">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Blog
+              Back to Recipes
             </Link>
           </Button>
 
-          {/* Header */}
+          {recipe.image && (
+            <div className="relative aspect-video w-full overflow-hidden rounded-lg shadow-lg">
+              <Image
+                src={recipe.image || "/placeholder.svg"}
+                alt={recipe.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+          )}
+
           <div className="space-y-4">
-            <Badge>{post.category}</Badge>
+            <Badge>{recipe.category}</Badge>
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl text-balance">
-              {post.title}
+              {recipe.title}
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              {post.author && (
+              {meta.prepTime && (
                 <div className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  {post.author}
+                  <Clock className="h-4 w-4" />
+                  {meta.prepTime}
+                </div>
+              )}
+              {meta.servings && (
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  {meta.servings} servings
                 </div>
               )}
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                {new Date(post.created_at).toLocaleDateString()}
+                {new Date(recipe.created_at).toLocaleDateString()}
               </div>
             </div>
           </div>
 
-          {/* Content */}
           <Card>
             <CardContent className="prose prose-neutral dark:prose-invert max-w-none pt-6">
-              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+              <div dangerouslySetInnerHTML={{ __html: recipe.content }} />
             </CardContent>
           </Card>
         </div>

@@ -2,7 +2,7 @@ import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calendar, Clock, ArrowLeft, User } from 'lucide-react'
+import { Calendar, ArrowLeft, User } from 'lucide-react'
 import Link from "next/link"
 import sql from "@/lib/db"
 import { notFound } from 'next/navigation'
@@ -10,16 +10,16 @@ import { notFound } from 'next/navigation'
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const articles = await sql`SELECT slug FROM articles WHERE published = true`
-  return articles.map((article) => ({
-    slug: article.slug,
+  const posts = await sql`SELECT slug FROM posts WHERE section = 'articles' AND published = true`
+  return posts.map((post) => ({
+    slug: post.slug,
   }))
 }
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
   const result = await sql`
-    SELECT * FROM articles 
-    WHERE slug = ${params.slug} AND published = true 
+    SELECT * FROM posts 
+    WHERE slug = ${params.slug} AND section = 'articles' AND published = true 
     LIMIT 1
   `
   
@@ -30,17 +30,17 @@ export default async function ArticlePage({ params }: { params: { slug: string }
   }
 
   return (
-    <div className="relative">
+    <div className="relative min-h-screen">
       <RippleGridBackground />
       
-      <article className="container mx-auto px-4 md:px-6 lg:px-8 py-24 max-w-7xl">
-        <div className="mx-auto max-w-3xl space-y-8">
-          <Link href="/articles">
-            <Button variant="ghost" size="sm">
+      <article className="relative z-10 mx-auto max-w-7xl px-4 py-24 md:px-6 lg:px-8">
+        <div className="mx-auto max-w-4xl space-y-8">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/articles">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Articles
-            </Button>
-          </Link>
+            </Link>
+          </Button>
 
           <div className="space-y-4">
             <Badge>{article.category}</Badge>
