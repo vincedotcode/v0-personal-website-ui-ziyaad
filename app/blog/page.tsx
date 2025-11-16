@@ -14,9 +14,10 @@ export const revalidate = 60 // Revalidate every 60 seconds
 
 export default async function BlogPage() {
   const blogPosts = await sql`
-    SELECT * FROM blog_posts 
-    WHERE published = true 
-    ORDER BY created_at DESC
+    SELECT * FROM posts 
+    WHERE section = 'blog'::post_section
+      AND status = 'published'
+    ORDER BY COALESCE(published_at, created_at) DESC
   `
 
   return (
@@ -59,7 +60,7 @@ export default async function BlogPage() {
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {new Date(post.created_at).toLocaleDateString()}
+                          {new Date(post.published_at || post.created_at).toLocaleDateString()}
                         </div>
                         {post.author && (
                           <div className="flex items-center gap-1">

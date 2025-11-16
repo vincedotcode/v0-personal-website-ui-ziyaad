@@ -3,62 +3,14 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BookOpen, Clock } from 'lucide-react'
 import Link from "next/link"
+import sql from "@/lib/db"
 
 export const metadata = {
   title: "Tutorials - Zi's Portfolio",
   description: "Step-by-step guides and tutorials for web development.",
 }
 
-const tutorials = [
-  {
-    title: "Building a REST API with Node.js",
-    description: "Learn how to build a production-ready REST API from scratch using Node.js and Express.",
-    level: "Intermediate",
-    duration: "2 hours",
-    lessons: 12,
-    slug: "rest-api-nodejs",
-  },
-  {
-    title: "React Hooks Deep Dive",
-    description: "Master React Hooks with practical examples and best practices.",
-    level: "Beginner",
-    duration: "1.5 hours",
-    lessons: 8,
-    slug: "react-hooks-deep-dive",
-  },
-  {
-    title: "TypeScript for JavaScript Developers",
-    description: "Transition from JavaScript to TypeScript with this comprehensive guide.",
-    level: "Beginner",
-    duration: "3 hours",
-    lessons: 15,
-    slug: "typescript-for-js-devs",
-  },
-  {
-    title: "Advanced Next.js Patterns",
-    description: "Explore advanced patterns and optimizations in Next.js applications.",
-    level: "Advanced",
-    duration: "2.5 hours",
-    lessons: 10,
-    slug: "advanced-nextjs-patterns",
-  },
-  {
-    title: "CSS Grid and Flexbox Mastery",
-    description: "Master modern CSS layout techniques with practical examples.",
-    level: "Intermediate",
-    duration: "2 hours",
-    lessons: 9,
-    slug: "css-grid-flexbox-mastery",
-  },
-  {
-    title: "Authentication with NextAuth.js",
-    description: "Implement secure authentication in your Next.js applications.",
-    level: "Intermediate",
-    duration: "1.5 hours",
-    lessons: 7,
-    slug: "authentication-nextauth",
-  },
-]
+export const revalidate = 60
 
 const getLevelColor = (level: string) => {
   switch (level) {
@@ -73,7 +25,14 @@ const getLevelColor = (level: string) => {
   }
 }
 
-export default function TutorialsPage() {
+export default async function TutorialsPage() {
+  const tutorials = await sql`
+    SELECT * FROM posts 
+    WHERE section = 'tutorials'::post_section
+      AND status = 'published'
+    ORDER BY COALESCE(published_at, created_at) DESC
+  `
+
   return (
     <div className="relative">
       <SquaresBackground />
@@ -92,35 +51,51 @@ export default function TutorialsPage() {
           </div>
 
           {/* Tutorials Grid */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {tutorials.map((tutorial, index) => (
-              <Link key={index} href={`/tutorials/${tutorial.slug}`}>
-                <Card className="h-full transition-all hover:shadow-lg hover:border-primary/20 cursor-pointer">
-                  <CardHeader>
-                    <Badge className={getLevelColor(tutorial.level)} variant="secondary">
-                      {tutorial.level}
-                    </Badge>
-                    <CardTitle className="line-clamp-2 text-balance mt-2">{tutorial.title}</CardTitle>
-                    <CardDescription className="line-clamp-2 leading-relaxed">
-                      {tutorial.description}
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {tutorial.duration}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <BookOpen className="h-3 w-3" />
-                        {tutorial.lessons} lessons
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-          </div>
+          {tutorials.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No tutorials found. Add content via the admin panel.</p>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+              {tutorials.map((tutorial) => {
+                const level = tutorial.meta?.level || 'Intermediate'
+                const duration = tutorial.meta?.duration
+                const lessons = tutorial.meta?.lessons
+                
+                return (
+                  <Link key={tutorial.id} href={`/tutorials/${tutorial.slug}`}>
+                    <Card className="h-full transition-all hover:shadow-lg hover:border-primary/20 cursor-pointer">
+                      <CardHeader>
+                        <Badge className={getLevelColor(level)} variant="secondary">
+                          {level}
+                        </Badge>
+                        <CardTitle className="line-clamp-2 text-balance mt-2">{tutorial.title}</CardTitle>
+                        <CardDescription className="line-clamp-2 leading-relaxed">
+                          {tutorial.excerpt || tutorial.content.substring(0, 100) + '...'}
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                          {duration && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {duration}
+                            </div>
+                          )}
+                          {lessons && (
+                            <div className="flex items-center gap-1">
+                              <BookOpen className="h-3 w-3" />
+                              {lessons} lessons
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -15,9 +15,10 @@ export const revalidate = 60
 
 export default async function ArticlesPage() {
   const articles = await sql`
-    SELECT * FROM articles 
-    WHERE published = true 
-    ORDER BY created_at DESC
+    SELECT * FROM posts 
+    WHERE section = 'articles'::post_section
+      AND status = 'published'
+    ORDER BY COALESCE(published_at, created_at) DESC
   `
 
   return (
@@ -57,7 +58,7 @@ export default async function ArticlesPage() {
                   <Card className="h-full transition-all hover:shadow-lg hover:border-primary/20 cursor-pointer bg-background/50 backdrop-blur">
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
-                        <Badge variant="secondary">{article.category}</Badge>
+                        <Badge variant="secondary">{article.category || 'Article'}</Badge>
                       </div>
                       <CardTitle className="text-balance">{article.title}</CardTitle>
                       <CardDescription className="leading-relaxed">
@@ -67,7 +68,7 @@ export default async function ArticlesPage() {
                     <CardContent className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
-                        {new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {new Date(article.published_at || article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
                       <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     </CardContent>

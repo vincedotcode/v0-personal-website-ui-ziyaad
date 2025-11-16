@@ -2,52 +2,40 @@ import { SquaresBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, Book, Video, FileText, Code } from 'lucide-react'
+import sql from "@/lib/db"
 
 export const metadata = {
   title: "Resources - Zi's Portfolio",
   description: "Useful tools, links, and resources for web developers.",
 }
 
-const resourceCategories = [
-  {
-    icon: Book,
-    title: "Learning Resources",
-    resources: [
-      { name: "MDN Web Docs", url: "https://developer.mozilla.org", description: "Comprehensive web development documentation" },
-      { name: "React Documentation", url: "https://react.dev", description: "Official React documentation and guides" },
-      { name: "TypeScript Handbook", url: "https://www.typescriptlang.org", description: "Learn TypeScript from basics to advanced" },
-    ],
-  },
-  {
-    icon: Video,
-    title: "Video Tutorials",
-    resources: [
-      { name: "Web Dev Simplified", url: "#", description: "Clear, concise web development tutorials" },
-      { name: "Fireship", url: "#", description: "Fast-paced coding tutorials and tech news" },
-      { name: "Traversy Media", url: "#", description: "In-depth web development courses" },
-    ],
-  },
-  {
-    icon: Code,
-    title: "Developer Tools",
-    resources: [
-      { name: "VS Code", url: "https://code.visualstudio.com", description: "Popular code editor with great extensions" },
-      { name: "Figma", url: "https://figma.com", description: "Collaborative design and prototyping tool" },
-      { name: "Postman", url: "https://postman.com", description: "API development and testing platform" },
-    ],
-  },
-  {
-    icon: FileText,
-    title: "Design Resources",
-    resources: [
-      { name: "Tailwind UI", url: "https://tailwindui.com", description: "Beautiful UI components for Tailwind CSS" },
-      { name: "Heroicons", url: "https://heroicons.com", description: "Beautiful hand-crafted SVG icons" },
-      { name: "Unsplash", url: "https://unsplash.com", description: "Free high-quality stock photos" },
-    ],
-  },
-]
+export const revalidate = 60
 
-export default function ResourcesPage() {
+const iconMap: Record<string, any> = {
+  book: Book,
+  video: Video,
+  fileText: FileText,
+  code: Code,
+}
+
+export default async function ResourcesPage() {
+  const resources = await sql`
+    SELECT * FROM posts 
+    WHERE section = 'resources'::post_section
+      AND status = 'published'
+    ORDER BY category, COALESCE(published_at, created_at) DESC
+  `
+
+  // Group resources by category
+  const groupedResources = resources.reduce((acc: Record<string, any[]>, resource: any) => {
+    const category = resource.category || 'Other'
+    if (!acc[category]) {
+      acc[category] = []
+    }
+    acc[category].push(resource)
+    return acc
+  }, {})
+
   return (
     <div className="relative">
       <SquaresBackground />
@@ -67,43 +55,58 @@ export default function ResourcesPage() {
           </div>
 
           {/* Resources Grid */}
-          <div className="grid gap-8 md:grid-cols-2">
-            {resourceCategories.map((category, index) => (
-              <Card key={index}>
-                <CardHeader>
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <category.icon className="h-5 w-5" />
-                    </div>
-                    <CardTitle>{category.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {category.resources.map((resource, resourceIndex) => (
-                      <a
-                        key={resourceIndex}
-                        href={resource.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-3 rounded-lg border border-border transition-all hover:border-primary/20 hover:bg-accent"
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="space-y-1">
-                            <div className="font-medium">{resource.name}</div>
-                            <p className="text-sm text-muted-foreground leading-relaxed">
-                              {resource.description}
-                            </p>
-                          </div>
-                          <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+          {Object.keys(groupedResources).length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No resources found. Add content via the admin panel.</p>
+            </div>
+          ) : (
+            <div className="grid gap-8 md:grid-cols-2">
+              {Object.entries(groupedResources).map(([category, items]) => {
+                const iconName = items[0]?.meta?.icon || 'book'
+                const IconComponent = iconMap[iconName] || Book
+                
+                return (
+                  <Card key={category}>
+                    <CardHeader>
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                          <IconComponent className="h-5 w-5" />
                         </div>
-                      </a>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                        <CardTitle>{category}</CardTitle>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        {items.map((resource) => {
+                          const url = resource.meta?.url || '#'
+                          
+                          return (
+                            <a
+                              key={resource.id}
+                              href={url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="block p-3 rounded-lg border border-border transition-all hover:border-primary/20 hover:bg-accent"
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="space-y-1">
+                                  <div className="font-medium">{resource.title}</div>
+                                  <p className="text-sm text-muted-foreground leading-relaxed">
+                                    {resource.excerpt || resource.content.substring(0, 80) + '...'}
+                                  </p>
+                                </div>
+                                <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                              </div>
+                            </a>
+                          )
+                        })}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          )}
         </div>
       </div>
     </div>
