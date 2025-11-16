@@ -17,10 +17,12 @@ export async function generateStaticParams() {
   }))
 }
 
-export default async function RecipeDetailPage({ params }: { params: { slug: string } }) {
+export default async function RecipeDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params
+  
   const result = await sql`
     SELECT * FROM posts 
-    WHERE slug = ${params.slug} AND section = 'cook' AND status = 'published'
+    WHERE slug = ${slug} AND section = 'cook' AND status = 'published'
     LIMIT 1
   `
   
