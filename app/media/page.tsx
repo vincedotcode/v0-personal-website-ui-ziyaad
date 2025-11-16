@@ -1,6 +1,3 @@
-"use client"
-
-import { useState } from "react"
 import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
