@@ -6,7 +6,8 @@ import { requireAuth } from '@/lib/auth'
 export async function GET() {
   try {
     const posts = await sql`
-      SELECT * FROM blog_posts 
+      SELECT * FROM posts 
+      WHERE section = 'blog'
       ORDER BY created_at DESC
     `
     return NextResponse.json(posts)
@@ -25,11 +26,21 @@ export async function POST(request: Request) {
     await requireAuth()
     
     const data = await request.json()
-    const { title, slug, excerpt, content, cover_image, author, published, category, tags } = data
+    const { title, slug, excerpt, content, cover_image, author, category, tags } = data
 
     const result = await sql`
-      INSERT INTO blog_posts (title, slug, excerpt, content, cover_image, author, published, category, tags)
-      VALUES (${title}, ${slug}, ${excerpt}, ${content}, ${cover_image}, ${author}, ${published}, ${category}, ${tags})
+      INSERT INTO posts (title, slug, excerpt, content, cover_image, author, section, status, meta)
+      VALUES (
+        ${title}, 
+        ${slug}, 
+        ${excerpt}, 
+        ${content}, 
+        ${cover_image}, 
+        ${author || 'Zi'}, 
+        'blog',
+        'published',
+        ${JSON.stringify({ category, tags })}
+      )
       RETURNING *
     `
 

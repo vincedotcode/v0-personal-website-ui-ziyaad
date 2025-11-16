@@ -19,9 +19,11 @@ interface BlogPost {
   content: string
   cover_image?: string
   author?: string
-  published: boolean
-  category?: string
-  tags?: string[]
+  status: string
+  meta?: {
+    category?: string
+    tags?: string[]
+  }
 }
 
 export default function AdminBlogPage() {
@@ -37,9 +39,11 @@ export default function AdminBlogPage() {
     excerpt: '',
     content: '',
     author: '',
-    published: false,
-    category: '',
-    tags: []
+    status: 'draft',
+    meta: {
+      category: '',
+      tags: []
+    }
   }
 
   useEffect(() => {
@@ -49,14 +53,19 @@ export default function AdminBlogPage() {
   const fetchPosts = async () => {
     try {
       const res = await fetch('/api/admin/blog')
+      if (!res.ok) {
+        throw new Error('Failed to fetch posts')
+      }
       const data = await res.json()
-      setPosts(data)
+      setPosts(Array.isArray(data) ? data : [])
     } catch (error) {
+      console.error('Fetch error:', error)
       toast({
         title: "Error",
         description: "Failed to fetch blog posts",
         variant: "destructive"
       })
+      setPosts([])
     } finally {
       setLoading(false)
     }
@@ -119,7 +128,14 @@ export default function AdminBlogPage() {
   }
 
   if (loading) {
-    return <div className="container mx-auto px-4 py-12">Loading...</div>
+    return (
+      <div className="container mx-auto px-4 py-12 flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   if (isCreating || editingPost) {
@@ -194,8 +210,11 @@ export default function AdminBlogPage() {
                   <Label htmlFor="category">Category</Label>
                   <Input
                     id="category"
-                    value={post.category || ''}
-                    onChange={(e) => setEditingPost({ ...post, category: e.target.value })}
+                    value={post.meta?.category || ''}
+                    onChange={(e) => setEditingPost({ 
+                      ...post, 
+                      meta: { ...post.meta, category: e.target.value }
+                    })}
                   />
                 </div>
               </div>
@@ -203,8 +222,11 @@ export default function AdminBlogPage() {
               <div className="flex items-center space-x-2">
                 <Switch
                   id="published"
-                  checked={post.published}
-                  onCheckedChange={(checked) => setEditingPost({ ...post, published: checked })}
+                  checked={post.status === 'published'}
+                  onCheckedChange={(checked) => setEditingPost({ 
+                    ...post, 
+                    status: checked ? 'published' : 'draft' 
+                  })}
                 />
                 <Label htmlFor="published">Published</Label>
               </div>
@@ -241,46 +263,54 @@ export default function AdminBlogPage() {
           </div>
         </div>
 
-        <div className="grid gap-4">
-          {posts.map((post) => (
-            <Card key={post.id}>
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <CardTitle>{post.title}</CardTitle>
-                    <CardDescription>{post.excerpt}</CardDescription>
-                    <div className="flex gap-2 mt-2">
-                      {post.published ? (
-                        <span className="text-xs bg-green-500/10 text-green-700 dark:text-green-400 px-2 py-1 rounded">Published</span>
-                      ) : (
-                        <span className="text-xs bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 px-2 py-1 rounded">Draft</span>
-                      )}
-                      {post.category && (
-                        <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">{post.category}</span>
-                      )}
+        {posts.length === 0 ? (
+          <Card>
+            <CardContent className="py-12 text-center">
+              <p className="text-muted-foreground">No blog posts yet. Create your first one!</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4">
+            {posts.map((post) => (
+              <Card key={post.id}>
+                <CardHeader>
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <CardTitle>{post.title}</CardTitle>
+                      <CardDescription>{post.excerpt}</CardDescription>
+                      <div className="flex gap-2 mt-2">
+                        {post.status === 'published' ? (
+                          <span className="text-xs bg-green-500/10 text-green-700 dark:text-green-400 px-2 py-1 rounded">Published</span>
+                        ) : (
+                          <span className="text-xs bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 px-2 py-1 rounded">Draft</span>
+                        )}
+                        {post.meta?.category && (
+                          <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">{post.meta.category}</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditingPost(post)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDelete(post.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setEditingPost(post)}
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDelete(post.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

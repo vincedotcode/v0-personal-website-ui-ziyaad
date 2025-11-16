@@ -20,10 +20,10 @@ export default function Error({
   }, [error])
 
   return (
-    <div className="relative min-h-[80vh] flex items-center">
+    <div className="relative min-h-screen flex items-center justify-center">
       <SquaresBackground />
       
-      <div className="container">
+      <div className="container mx-auto px-4 md:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <Card className="border-2 border-destructive/20">
             <CardHeader className="text-center space-y-4 pb-4">
