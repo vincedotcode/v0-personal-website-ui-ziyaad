@@ -4,11 +4,16 @@ import { useState, useEffect } from "react"
 import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Shield, Lock, Eye, Database, FileText, Mail, Search } from 'lucide-react'
-import { Input } from "@/components/ui/input"
+import { Shield, Lock, Eye, Database, FileText, Mail } from 'lucide-react'
 import Link from "next/link"
-import { getDataProtectionArticles } from "@/lib/strapi"
-import type { DataProtectionArticle } from "@/types/strapi"
+import sql from "@/lib/db"
+
+export const metadata = {
+  title: "Data Protection - Zi's Portfolio",
+  description: "Privacy and data protection information.",
+}
+
+export const revalidate = 60
 
 const iconMap: Record<string, any> = {
   shield: Shield,
@@ -19,24 +24,12 @@ const iconMap: Record<string, any> = {
   mail: Mail,
 }
 
-export default function DataProtectionPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [articles, setArticles] = useState<DataProtectionArticle[]>([])
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    async function fetchArticles() {
-      const data = await getDataProtectionArticles() as DataProtectionArticle[]
-      setArticles(data)
-      setLoading(false)
-    }
-    fetchArticles()
-  }, [])
-
-  const filteredArticles = articles.filter((article) =>
-    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.description.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+export default async function DataProtectionPage() {
+  const articles = await sql`
+    SELECT * FROM data_protection_articles 
+    WHERE published = true 
+    ORDER BY created_at DESC
+  `
 
   return (
     <div className="relative">
@@ -56,33 +49,15 @@ export default function DataProtectionPage() {
             </p>
           </div>
 
-          {/* Search */}
-          <div className="max-w-md mx-auto">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </div>
-
           {/* Main Content */}
-          {loading ? (
+          {articles.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Loading articles...</p>
-            </div>
-          ) : filteredArticles.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No articles found. Connect your Strapi CMS to display content.</p>
+              <p className="text-muted-foreground">No articles found. Add content via the admin panel.</p>
             </div>
           ) : (
             <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-              {filteredArticles.map((article) => {
-                const IconComponent = article.icon ? iconMap[article.icon] || Shield : Shield
+              {articles.map((article) => {
+                const IconComponent = Shield
                 return (
                   <Link key={article.id} href={`/data-protection/${article.slug}`}>
                     <Card className="h-full transition-all hover:shadow-lg hover:border-primary/20 cursor-pointer">
@@ -93,11 +68,11 @@ export default function DataProtectionPage() {
                         <CardTitle className="text-balance">{article.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <CardDescription className="leading-relaxed">
-                          {article.description}
+                        <CardDescription className="leading-relaxed line-clamp-3">
+                          {article.content.substring(0, 150)}...
                         </CardDescription>
                         <p className="text-xs text-muted-foreground mt-4">
-                          {new Date(article.publishedAt).toLocaleDateString()}
+                          {new Date(article.created_at).toLocaleDateString()}
                         </p>
                       </CardContent>
                     </Card>

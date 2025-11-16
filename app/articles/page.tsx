@@ -1,34 +1,24 @@
-"use client"
-
-import { useState, useEffect } from "react"
 import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Calendar, ArrowRight, Search } from 'lucide-react'
+import { Calendar, ArrowRight } from 'lucide-react'
 import Link from "next/link"
 import Orb from "@/components/ui/orb"
-import { getArticles } from "@/lib/strapi"
-import type { Article } from "@/types/strapi"
+import sql from "@/lib/db"
 
-export default function ArticlesPage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [articles, setArticles] = useState<Article[]>([])
-  const [loading, setLoading] = useState(true)
+export const metadata = {
+  title: "Articles - Zi's Portfolio",
+  description: "In-depth articles about web development and technology.",
+}
 
-  useEffect(() => {
-    async function fetchArticles() {
-      const data = await getArticles() as Article[]
-      setArticles(data)
-      setLoading(false)
-    }
-    fetchArticles()
-  }, [])
+export const revalidate = 60
 
-  const filteredArticles = articles.filter((article) =>
-    article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    article.category.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+export default async function ArticlesPage() {
+  const articles = await sql`
+    SELECT * FROM articles 
+    WHERE published = true 
+    ORDER BY created_at DESC
+  `
 
   return (
     <div className="relative">
@@ -55,38 +45,19 @@ export default function ArticlesPage() {
             </p>
           </div>
 
-          {/* Search */}
-          <div className="max-w-md mx-auto">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search articles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-          </div>
-
           {/* Articles Grid */}
-          {loading ? (
+          {articles.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">Loading articles...</p>
-            </div>
-          ) : filteredArticles.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">No articles found. Connect your Strapi CMS to display content.</p>
+              <p className="text-muted-foreground">No articles found. Add content via the admin panel.</p>
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredArticles.map((article) => (
+              {articles.map((article) => (
                 <Link key={article.id} href={`/articles/${article.slug}`}>
                   <Card className="h-full transition-all hover:shadow-lg hover:border-primary/20 cursor-pointer bg-background/50 backdrop-blur">
                     <CardHeader>
                       <div className="flex items-center justify-between mb-2">
                         <Badge variant="secondary">{article.category}</Badge>
-                        <span className="text-xs text-muted-foreground">{article.readTime}</span>
                       </div>
                       <CardTitle className="text-balance">{article.title}</CardTitle>
                       <CardDescription className="leading-relaxed">
@@ -96,7 +67,7 @@ export default function ArticlesPage() {
                     <CardContent className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
-                        {new Date(article.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {new Date(article.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
                       <ArrowRight className="h-4 w-4 text-muted-foreground" />
                     </CardContent>

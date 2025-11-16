@@ -3,16 +3,21 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar, Clock } from 'lucide-react'
 import Link from "next/link"
-import { getBlogPosts } from "@/lib/strapi"
-import type { BlogPost } from "@/types/strapi"
+import sql from "@/lib/db"
 
 export const metadata = {
   title: "Blog - Zi's Portfolio",
   description: "Articles, tutorials, and thoughts on web development.",
 }
 
+export const revalidate = 60 // Revalidate every 60 seconds
+
 export default async function BlogPage() {
-  const blogPosts = await getBlogPosts() as BlogPost[]
+  const blogPosts = await sql`
+    SELECT * FROM blog_posts 
+    WHERE published = true 
+    ORDER BY created_at DESC
+  `
 
   return (
     <div className="relative">
@@ -34,7 +39,7 @@ export default async function BlogPage() {
           {/* Blog Posts Grid */}
           {blogPosts.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-muted-foreground">No blog posts found. Connect your Strapi CMS to display content.</p>
+              <p className="text-muted-foreground">No blog posts found. Add content via the admin panel.</p>
             </div>
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -47,19 +52,21 @@ export default async function BlogPage() {
                       </Badge>
                       <CardTitle className="line-clamp-2 text-balance">{post.title}</CardTitle>
                       <CardDescription className="line-clamp-2 leading-relaxed">
-                        {post.description}
+                        {post.excerpt}
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center gap-4 text-xs text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-3 w-3" />
-                          {new Date(post.publishedAt).toLocaleDateString()}
+                          {new Date(post.created_at).toLocaleDateString()}
                         </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {post.readTime}
-                        </div>
+                        {post.author && (
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            By {post.author}
+                          </div>
+                        )}
                       </div>
                     </CardContent>
                   </Card>

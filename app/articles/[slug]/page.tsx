@@ -4,19 +4,26 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, ArrowLeft, User } from 'lucide-react'
 import Link from "next/link"
-import { getArticle, getArticles } from "@/lib/strapi"
-import type { Article } from "@/types/strapi"
+import sql from "@/lib/db"
 import { notFound } from 'next/navigation'
 
+export const revalidate = 60
+
 export async function generateStaticParams() {
-  const articles = await getArticles() as Article[]
+  const articles = await sql`SELECT slug FROM articles WHERE published = true`
   return articles.map((article) => ({
     slug: article.slug,
   }))
 }
 
 export default async function ArticlePage({ params }: { params: { slug: string } }) {
-  const article = await getArticle(params.slug) as Article | null
+  const result = await sql`
+    SELECT * FROM articles 
+    WHERE slug = ${params.slug} AND published = true 
+    LIMIT 1
+  `
+  
+  const article = result[0]
 
   if (!article) {
     notFound()
@@ -49,11 +56,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
               )}
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                {new Date(article.publishedAt).toLocaleDateString()}
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                {article.readTime}
+                {new Date(article.created_at).toLocaleDateString()}
               </div>
             </div>
           </div>

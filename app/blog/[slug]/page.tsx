@@ -4,19 +4,26 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar, Clock, ArrowLeft, User } from 'lucide-react'
 import Link from "next/link"
-import { getBlogPost, getBlogPosts } from "@/lib/strapi"
-import type { BlogPost } from "@/types/strapi"
+import sql from "@/lib/db"
 import { notFound } from 'next/navigation'
 
+export const revalidate = 60
+
 export async function generateStaticParams() {
-  const posts = await getBlogPosts() as BlogPost[]
+  const posts = await sql`SELECT slug FROM blog_posts WHERE published = true`
   return posts.map((post) => ({
     slug: post.slug,
   }))
 }
 
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const post = await getBlogPost(params.slug) as BlogPost | null
+  const result = await sql`
+    SELECT * FROM blog_posts 
+    WHERE slug = ${params.slug} AND published = true 
+    LIMIT 1
+  `
+  
+  const post = result[0]
 
   if (!post) {
     notFound()
@@ -51,11 +58,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
               )}
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4" />
-                {new Date(post.publishedAt).toLocaleDateString()}
-              </div>
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
-                {post.readTime}
+                {new Date(post.created_at).toLocaleDateString()}
               </div>
             </div>
           </div>
