@@ -144,11 +144,7 @@ CREATE TABLE IF NOT EXISTS write_posts (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Insert default admin (password: admin123)
--- Note: In production, change this immediately!
-INSERT INTO admins (email, password_hash) 
-VALUES ('admin@example.com', '$2a$10$rOZJVqVZqVZqVZqVZqVZqObvJTCx0EqXqVZqVZqVZqVZqVZqVZqVZ')
-ON CONFLICT (email) DO NOTHING;
+
 
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_blog_posts_slug ON blog_posts(slug);
