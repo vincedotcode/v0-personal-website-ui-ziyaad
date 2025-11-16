@@ -11,7 +11,7 @@ import Image from 'next/image'
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const posts = await sql`SELECT slug FROM posts WHERE section = 'podcasts' AND published = true`
+  const posts = await sql`SELECT slug FROM posts WHERE section = 'podcasts' AND status = 'published'`
   return posts.map((post) => ({
     slug: post.slug,
   }))
@@ -20,7 +20,7 @@ export async function generateStaticParams() {
 export default async function PodcastDetailPage({ params }: { params: { slug: string } }) {
   const result = await sql`
     SELECT * FROM posts 
-    WHERE slug = ${params.slug} AND section = 'podcasts' AND published = true 
+    WHERE slug = ${params.slug} AND section = 'podcasts' AND status = 'published'
     LIMIT 1
   `
   
