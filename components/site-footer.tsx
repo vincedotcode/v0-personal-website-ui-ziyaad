@@ -44,7 +44,7 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link
-                  href="/contact"
+                  href="/touchbase"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
                   Contact

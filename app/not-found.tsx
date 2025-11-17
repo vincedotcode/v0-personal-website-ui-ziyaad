@@ -50,7 +50,7 @@ export default function NotFound() {
               <div className="pt-4 border-t">
                 <p className="text-sm text-muted-foreground text-center leading-relaxed">
                   If you believe this is a mistake, please{" "}
-                  <Link href="/contact" className="text-primary hover:underline">
+                  <Link href="/touchbase" className="text-primary hover:underline">
                     contact me
                   </Link>
                   .
@@ -86,7 +86,7 @@ export default function NotFound() {
             </Link>
             
             <Link
-              href="/contact"
+              href="/touchbase"
               className="group rounded-lg border border-border p-4 transition-all hover:border-primary/20 hover:shadow-md"
             >
               <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">

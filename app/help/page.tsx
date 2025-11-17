@@ -46,7 +46,7 @@ const helpSections = [
     icon: Mail,
     title: "Contact Support",
     description: "Can't find what you're looking for? Reach out to our support team directly.",
-    link: "/contact",
+    link: "/touchbase",
   },
 ]
 

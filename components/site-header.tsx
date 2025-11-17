@@ -25,7 +25,7 @@ export function SiteHeader() {
         <Link href="/" className="flex items-center gap-2">
           <div className="relative h-10 w-10">
             <Image
-              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo_BW%20%281%29-J37En6ZBeRlVMWzYhEm162gPDSFXbO.png"
+              src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo_Colored%20%281%29-KPLSkJX8X0Co5ddTIV8Y21xTxKSLV4.png"
               alt="Zi Logo"
               width={40}
               height={40}
@@ -41,7 +41,8 @@ export function SiteHeader() {
           </div>
         </Link>
 
-        <NavigationMenu className="hidden lg:flex">
+        <NavigationMenu  viewport={false}
+  className="hidden lg:flex">
           <NavigationMenuList>
             {/* Gotta Do */}
             <NavigationMenuItem>
@@ -104,7 +105,7 @@ export function SiteHeader() {
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <Link
-                  href="/contact"
+                  href="/touchbase"
                   className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50"
                 >
                   Touch Base
@@ -151,7 +152,7 @@ export function SiteHeader() {
               <MobileNavLink href="/media">Media</MobileNavLink>
             </MobileNavSection>
 
-            <MobileNavLink href="/contact">Touch Base</MobileNavLink>
+            <MobileNavLink href="/touchbase">Touch Base</MobileNavLink>
           </nav>
         </div>
       )}

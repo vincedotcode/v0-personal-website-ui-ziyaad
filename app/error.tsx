@@ -59,7 +59,7 @@ export default function Error({
               <div className="pt-4 border-t">
                 <p className="text-sm text-muted-foreground text-center leading-relaxed">
                   If this problem persists, please{" "}
-                  <Link href="/contact" className="text-primary hover:underline">
+                  <Link href="/touchbase" className="text-primary hover:underline">
                     contact me
                   </Link>{" "}
                   and I'll look into it.
