@@ -8,7 +8,7 @@ This project includes a custom-built CMS (Content Management System) using Neon 
 
 The database schema needs to be created in your Neon database. Run the SQL script:
 
-1. Go to the **Scripts** section in v0
+1. Go to the **Scripts** section in 
 2. Find `scripts/001-create-cms-schema.sql`
 3. Click **Run** to execute the script against your Neon database
 
