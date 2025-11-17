@@ -10,7 +10,7 @@ import { notFound } from 'next/navigation'
 export const revalidate = 60
 
 export async function generateStaticParams() {
-  const posts = await sql`SELECT slug FROM posts WHERE section = 'blog' AND status = 'published'`
+  const posts = await sql`SELECT slug FROM posts WHERE section = 'articles'::post_section AND status = 'published'`
   return posts.map((post) => ({
     slug: post.slug,
   }))
@@ -21,7 +21,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
   
   const result = await sql`
     SELECT * FROM posts 
-    WHERE slug = ${slug} AND section = 'blog' AND status = 'published'
+    WHERE slug = ${slug} AND section = 'articles'::post_section AND status = 'published'
     LIMIT 1
   `
   

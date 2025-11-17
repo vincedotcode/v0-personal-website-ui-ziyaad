@@ -35,15 +35,15 @@ interface Post {
 }
 
 const SECTIONS = [
-  { value: 'blog', label: 'Blog Posts' },
-  { value: 'articles', label: 'Articles' },
+  { value: 'articles', label: 'Blog / Articles' },
+  { value: 'product', label: 'Product Notes' },
+  { value: 'portfolio', label: 'Case Studies' },
+  { value: 'write', label: 'Writing' },
+  { value: 'help', label: 'Guides & Tutorials' },
   { value: 'books', label: 'Books' },
   { value: 'podcasts', label: 'Podcasts' },
-  { value: 'cook', label: 'Recipes' },
-  { value: 'write', label: 'Writing' },
-  { value: 'tutorials', label: 'Tutorials' },
-  { value: 'resources', label: 'Resources' },
   { value: 'media', label: 'Media' },
+  { value: 'cook', label: 'Recipes' },
   { value: 'dataprotection', label: 'Data Protection' },
 ]
 
@@ -58,7 +58,7 @@ export default function AdminPostsPage() {
   const [isCreating, setIsCreating] = useState(false)
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
-  const [selectedSection, setSelectedSection] = useState('blog')
+  const [selectedSection, setSelectedSection] = useState('articles')
   const [searchTerm, setSearchTerm] = useState('')
   const [tagInput, setTagInput] = useState('')
   const { toast } = useToast()

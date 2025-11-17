@@ -25,13 +25,24 @@ const getLevelColor = (level: string) => {
   }
 }
 
+type Tutorial = {
+  id: number
+  title: string
+  slug: string
+  description: string | null
+  content: string
+  level: string | null
+  duration: string | null
+  lessons: number | null
+}
+
 export default async function TutorialsPage() {
-  const tutorials = await sql`
-    SELECT * FROM posts 
-    WHERE section = 'tutorials'::post_section
-      AND status = 'published'
-    ORDER BY COALESCE(published_at, created_at) DESC
-  `
+  const tutorials = (await sql`
+    SELECT id, title, slug, description, content, level, duration, lessons
+    FROM tutorials
+    WHERE published = true
+    ORDER BY COALESCE(updated_at, created_at) DESC
+  `) as Tutorial[]
 
   return (
     <div className="relative">
@@ -58,9 +69,9 @@ export default async function TutorialsPage() {
           ) : (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {tutorials.map((tutorial) => {
-                const level = tutorial.meta?.level || 'Intermediate'
-                const duration = tutorial.meta?.duration
-                const lessons = tutorial.meta?.lessons
+                const level = tutorial.level || 'Intermediate'
+                const duration = tutorial.duration
+                const lessons = tutorial.lessons
                 
                 return (
                   <Link key={tutorial.id} href={`/tutorials/${tutorial.slug}`}>
@@ -71,7 +82,7 @@ export default async function TutorialsPage() {
                         </Badge>
                         <CardTitle className="line-clamp-2 text-balance mt-2">{tutorial.title}</CardTitle>
                         <CardDescription className="line-clamp-2 leading-relaxed">
-                          {tutorial.excerpt || tutorial.content.substring(0, 100) + '...'}
+                          {tutorial.description || tutorial.content.substring(0, 100) + '...'}
                         </CardDescription>
                       </CardHeader>
                       <CardContent>

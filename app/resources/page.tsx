@@ -18,16 +18,25 @@ const iconMap: Record<string, any> = {
   code: Code,
 }
 
+type ResourceRow = {
+  id: number
+  name: string
+  url: string
+  description: string | null
+  category: string | null
+  icon: string | null
+}
+
 export default async function ResourcesPage() {
-  const resources = await sql`
-    SELECT * FROM posts 
-    WHERE section = 'resources'::post_section
-      AND status = 'published'
-    ORDER BY category, COALESCE(published_at, created_at) DESC
+  const resources = await sql<ResourceRow>`
+    SELECT id, name, url, description, category, icon
+    FROM resources
+    WHERE published = true
+    ORDER BY category, created_at DESC
   `
 
   // Group resources by category
-  const groupedResources = resources.reduce((acc: Record<string, any[]>, resource: any) => {
+  const groupedResources = resources.reduce((acc: Record<string, ResourceRow[]>, resource) => {
     const category = resource.category || 'Other'
     if (!acc[category]) {
       acc[category] = []
@@ -62,7 +71,7 @@ export default async function ResourcesPage() {
           ) : (
             <div className="grid gap-8 md:grid-cols-2">
               {Object.entries(groupedResources).map(([category, items]) => {
-                const iconName = items[0]?.meta?.icon || 'book'
+                const iconName = items[0]?.icon || 'book'
                 const IconComponent = iconMap[iconName] || Book
                 
                 return (
@@ -78,8 +87,7 @@ export default async function ResourcesPage() {
                     <CardContent>
                       <div className="space-y-4">
                         {items.map((resource) => {
-                          const url = resource.meta?.url || '#'
-                          
+                          const url = resource.url || '#'
                           return (
                             <a
                               key={resource.id}
@@ -90,12 +98,12 @@ export default async function ResourcesPage() {
                             >
                               <div className="flex items-start justify-between gap-2">
                                 <div className="space-y-1">
-                                  <div className="font-medium">{resource.title}</div>
+                                  <div className="font-medium">{resource.name}</div>
                                   <p className="text-sm text-muted-foreground leading-relaxed">
-                                    {resource.excerpt || resource.content.substring(0, 80) + '...'}
+                                    {resource.description || 'Learn more'}
                                   </p>
                                 </div>
-                                <ExternalLink className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                                <ExternalLink className="h-4 w-4 text-muted-foreground" />
                               </div>
                             </a>
                           )

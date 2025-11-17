@@ -15,7 +15,7 @@ export const revalidate = 60 // Revalidate every 60 seconds
 export default async function BlogPage() {
   const blogPosts = await sql`
     SELECT * FROM posts 
-    WHERE section = 'blog'::post_section
+    WHERE section = 'articles'::post_section
       AND status = 'published'
     ORDER BY COALESCE(published_at, created_at) DESC
   `
