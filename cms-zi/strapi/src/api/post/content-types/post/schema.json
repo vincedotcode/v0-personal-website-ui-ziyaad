@@ -1,0 +1,64 @@
+{
+  "kind": "collectionType",
+  "collectionName": "posts",
+  "info": {
+    "singularName": "post",
+    "pluralName": "posts",
+    "displayName": "Post"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "slug": {
+      "type": "uid"
+    },
+    "excerpt": {
+      "type": "text"
+    },
+    "format": {
+      "type": "enumeration",
+      "enum": [
+        "podcast",
+        "article",
+        "link",
+        "video"
+      ]
+    },
+    "youtubeUrl": {
+      "type": "string"
+    },
+    "externalUrl": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "readingTimeMinutes": {
+      "type": "integer"
+    },
+    "isFeatured": {
+      "type": "boolean"
+    },
+    "seoTitle": {
+      "type": "string"
+    },
+    "seoDescription": {
+      "type": "text"
+    },
+    "durationSeconds": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::tag.tag",
+      "inversedBy": "posts"
+    }
+  }
+}
