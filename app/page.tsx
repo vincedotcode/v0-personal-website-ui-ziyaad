@@ -1,18 +1,14 @@
-import Link from "next/link"
+
+"use client";
 import { InfiniteMovingCards } from "@/components/infinite-moving-cards"
-import { ParticleButton } from "@/components/particle-button"
-import { RippleGridBackground } from "@/components/reactbits-background"
-import { ArrowRight, Code, Palette, Rocket } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {  Code, Palette, Rocket } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import Orb from "@/components/ui/orb"
-import { LayoutTextFlip } from "@/components/ui/layout-text-flip"
 import { FinalCtaSection } from "@/components/final-cta"
 import { ProductExperienceSection } from "@/components/product-experience"
 import { CompaniesHelpedSection } from "@/components/companies-helped"
 import { MySkillsetSection } from "@/components/my-skillset-section"
 import { ProcessSection } from "@/components/process-section"
-import Image from "next/image"
+import HeroSection from "@/components/hero-section";
 
 const testimonials = [
   {
@@ -110,87 +106,8 @@ export default function HomePage() {
   return (
     <div className="relative">
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
-  <div
-    style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
-  >
-    <Orb hoverIntensity={0.5} rotateOnHover={true} hue={180} forceHoverState={false} />
-  </div>
-  <RippleGridBackground />
+      <HeroSection />
 
-  <div className="container relative z-10 py-24 px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
-    <div className="mx-auto max-w-5xl flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
-      {/* Text side */}
-      <div className="flex-1 text-center lg:text-left space-y-6">
-        <Badge className="mb-2" variant="secondary">
-          Experienced product leader from Mauritius
-        </Badge>
-
-        <div className="space-y-3">
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl text-balance">
-            Hi, I&apos;m Zi
-          </h1>
-          <div className="flex flex-col sm:flex-column items-center lg:items-start justify-center lg:justify-start gap-2 text-center lg:text-left">
-          <LayoutTextFlip
-              text="I work at the intersection of"
-              words={["Product Management", "Data Protection", "Content & Creativity", "Helping Others"]}
-              duration={3000}
-            />
-          </div>
-        </div>
-
-        <p className="text-xl text-muted-foreground leading-relaxed md:text-2xl text-balance">
-          I am an experienced product leader from Mauritius with an interest in data protection who
-          enjoys consuming quality content, cooking, writing, singing, board games and most of all,
-          helping others. I believe in the good the world and its people have to offer.
-        </p>
-
-        <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-          <ParticleButton size="lg" asChild>
-            <Link href="/portfolio">
-              Portfolio
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
-          </ParticleButton>
-          <ParticleButton size="lg" variant="outline" asChild>
-            <Link href="/assets/ziyaad-ben-eydatoula-cv.pdf" target="_blank">
-              Download C.V.
-            </Link>
-          </ParticleButton>
-        </div>
-
-        <div className="pt-4 border-l-0 lg:border-l lg:pl-4 border-muted flex flex-col gap-1 items-center lg:items-start">
-          <p className="italic text-sm md:text-base text-muted-foreground">
-            “Be, do and think good!”
-          </p>
-          <span className="text-xs uppercase tracking-[0.22em] text-muted-foreground">
-            — Zi
-          </span>
-        </div>
-      </div>
-
-      {/* Image side */}
-      <div className="flex-1 flex items-center justify-center">
-        <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/30 via-primary/10 to-transparent blur-xl opacity-70" />
-          <div className="relative rounded-3xl border border-border/60 bg-background/80 shadow-xl overflow-hidden">
-            <Image
-              src="/images/ziyaad-portrait.jpg" // adjust path to actual image
-              alt="Portrait of Zi"
-              width={400}
-              height={400}
-              className="h-full w-full object-cover"
-              priority
-            />
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-
-      
 
       {/* My Skillset (flip cards) */}
       <MySkillsetSection />

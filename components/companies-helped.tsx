@@ -2,48 +2,50 @@
 
 import LogoLoop, { type LogoItem } from "@/components/ui/logo-loop"
 
-
-
 const companiesHelpedLogos: LogoItem[] = [
   {
-    src: "/logos/sega-europe.svg",
+    src: "/images/sega-icon.png",
     alt: "SEGA Europe",
     href: "https://www.sega.com",
     title: "SEGA Europe",
   },
   {
-    src: "/logos/teradata.svg",
+    src: "/images/teradata-icon.png",
     alt: "Teradata",
     href: "https://www.teradata.com",
     title: "Teradata",
   },
   {
-    src: "/logos/mapp-digital.svg",
+    src: "/images/mapp-icon.jpg",
     alt: "Mapp Digital",
     href: "https://mapp.com",
     title: "Mapp Digital",
   },
   {
-    src: "/logos/stratiko.svg",
+    src: "/images/stratiko-icon.png",
     alt: "Stratiko",
     href: "https://stratiko.com",
     title: "Stratiko",
   },
   {
-    src: "/logos/mulytic-labs.svg",
+    src: "/images/mulyticlabs-icon.png",
     alt: "Mulytic Labs",
     href: "https://mulytic.com",
     title: "Mulytic Labs",
   },
   {
-    src: "/logos/tesco.svg",
+    src: "/images/Tesco-icon.png", // keep the exact filename casing
     alt: "Tesco",
     href: "https://www.tesco.com",
     title: "Tesco",
   },
+  {
+    src: "/images/Testroniclabs-icon.png",
+    alt: "Testronic Labs",
+    href: "https://www.testroniclabs.com",
+    title: "Testronic Labs",
+  },
 ]
-
-
 
 export function CompaniesHelpedSection() {
   return (
@@ -73,9 +75,9 @@ export function CompaniesHelpedSection() {
             logos={companiesHelpedLogos}
             speed={90}
             direction="left"
-            logoHeight={40}
+            logoHeight={60}
             gap={48}
-            hoverSpeed={0}
+            hoverSpeed={1}
             scaleOnHover
             fadeOut
             fadeOutColor="#0E0E0E"
