@@ -1,92 +1,96 @@
-const STRAPI_URL = process.env.STRAPI_API_URL
-const STRAPI_TOKEN = process.env.STRAPI_API_TOKEN
-
-if (!STRAPI_URL || !STRAPI_TOKEN) {
-  throw new Error("STRAPI_API_URL and STRAPI_API_TOKEN must be set")
-}
-
-type StrapiResponse<T> = {
-  data: T[]
-  meta: {
-    pagination?: {
-      page: number
-      pageSize: number
-      pageCount: number
-      total: number
+// lib/strapi.ts
+export type StrapiTag = {
+    id: number;
+    attributes: {
+      name: string;
+      slug: string;
+      description?: string | null;
+    };
+  };
+  
+  export type StrapiPost = {
+    id: number;
+    attributes: {
+      title: string;
+      slug: string;
+      excerpt?: string | null;
+      content?: string | null;
+      format?: "article" | "video" | "podcast" | "link" | string;
+      youtubeUrl?: string | null;
+      publishedAt?: string;
+      tags: {
+        data: StrapiTag[];
+      };
+    };
+  };
+  
+  type StrapiResponse<T> = {
+    data: T[];
+    meta: {
+      pagination: {
+        page: number;
+        pageSize: number;
+        pageCount: number;
+        total: number;
+      };
+    };
+  };
+  
+  const STRAPI_URL = process.env.NEXT_PUBLIC_STRAPI_URL;
+  const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
+  
+  if (!STRAPI_URL) {
+    console.warn("⚠️ NEXT_PUBLIC_STRAPI_URL is not set. Strapi calls will fail.");
+  }
+  
+  async function strapiFetch<T>(
+    path: string,
+    options: RequestInit = {},
+  ): Promise<StrapiResponse<T>> {
+    if (!STRAPI_URL) {
+      throw new Error("NEXT_PUBLIC_STRAPI_URL is not defined");
     }
+  
+    const url = `${STRAPI_URL}${path}`;
+    console.log("Strapi request URL:", url);
+  
+    const res = await fetch(url, {
+      ...options,
+      cache: "no-store", // or "force-cache" + revalidate if you want
+      headers: {
+        "Content-Type": "application/json",
+        ...(STRAPI_API_TOKEN ? { Authorization: `Bearer ${STRAPI_API_TOKEN}` } : {}),
+        ...(options.headers || {}),
+      },
+    });
+  
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.error("Strapi error:", res.status, text);
+      throw new Error(`Strapi request failed: ${res.status}`);
+    }
+  
+    return res.json();
   }
-}
-
-export async function strapiFetch<T>(
-  path: string,
-  { searchParams }: { searchParams?: Record<string, string | number | undefined> } = {},
-) {
-  const url = new URL(`/api${path}`, STRAPI_URL)
-
-  if (searchParams) {
-    Object.entries(searchParams).forEach(([key, value]) => {
-      if (value !== undefined) url.searchParams.set(key, String(value))
-    })
-  }
-
-  const res = await fetch(url.toString(), {
-    headers: {
-      Authorization: `Bearer ${STRAPI_TOKEN}`,
-    },
-    // server-side only, no caching for now (you can tune later)
-    cache: "no-store",
-  })
-
-  if (!res.ok) {
-    console.error("Strapi error", res.status, await res.text())
-    throw new Error("Failed to fetch from Strapi")
-  }
-
-  return (await res.json()) as T
-}
-
-// Helpers
-
-export async function getPostsByTag(tagSlug: string, page = 1, pageSize = 10) {
-  return strapiFetch<StrapiResponse<any>>("/posts", {
-    searchParams: {
+  
+  /**
+   * Get posts by tag slug (product, cook, etc.)
+   */
+  export async function getPostsByTag(
+    tagSlug: string,
+    page = 1,
+    pageSize = 10,
+  ) {
+    const params = new URLSearchParams({
+      "pagination[page]": String(page),
+      "pagination[pageSize]": String(pageSize),
+      "sort[0]": "publishedAt:desc",
       "filters[tags][slug][$eq]": tagSlug,
-      "sort[0]": "publishedAt:desc",
-      "pagination[page]": page,
-      "pagination[pageSize]": pageSize,
-      "populate[0]": "tags",
-    },
-  })
-}
-
-export async function getPostBySlug(slug: string) {
-  const res = await strapiFetch<StrapiResponse<any>>("/posts", {
-    searchParams: {
-      "filters[slug][$eq]": slug,
-      "populate[0]": "tags",
-    },
-  })
-
-  return res.data[0] ?? null
-}
-
-export async function searchPosts(query: string, page = 1, pageSize = 10) {
-  return strapiFetch<StrapiResponse<any>>("/posts", {
-    searchParams: {
-      "filters[$or][0][title][$containsi]": query,
-      "filters[$or][1][excerpt][$containsi]": query,
-      "filters[$or][2][content][$containsi]": query,
-      "sort[0]": "publishedAt:desc",
-      "pagination[page]": page,
-      "pagination[pageSize]": pageSize,
-      "populate[0]": "tags",
-    },
-  })
-}
-
-export async function getPortfolioPage() {
-  const res = await strapiFetch<{ data: any }>("/portfolio-page", {
-    searchParams: { "populate[0]": "seo" },
-  })
-  return res.data
-}
+      "populate[tags]": "*",
+    });
+  
+    // IMPORTANT: if your Strapi endpoint is different, change /api/posts here
+    const res = await strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`);
+    return res;
+  }
+  
