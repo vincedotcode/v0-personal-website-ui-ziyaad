@@ -28,6 +28,8 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.22",
+    "tailwindcss": "^4.1.17",
     "typescript": "^5"
   },
   "engines": {
@@ -35,7 +37,7 @@
     "npm": ">=6.0.0"
   },
   "strapi": {
-    "uuid": "8f7ece9c-c05a-4a5a-86c3-bb01f1d61fcd",
-    "installId": "3be971d06305cbb683d7fa88ab38d04a30e794b9251c5d7681212f2dedc08fc8"
+    "uuid": "012586db-4608-40c4-bc88-97f6d6f2926b",
+    "installId": "0f5106039adc0f5a6b69a2e9bdbbffb118eee92c16da534888f3fec92978f5b0"
   }
 }
