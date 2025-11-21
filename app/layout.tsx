@@ -5,17 +5,64 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { CookieConsent } from "@/components/cookie-consent"
 import { ThemeProvider } from "@/components/theme-provider"
+import { AnalyticsProvider } from "@/components/analytics-provider"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Zi's Portfolio - Lead Product Manager",
+  metadataBase: new URL("https://ziyaadbeneydatoula.com"),
+  title: {
+    default: "Ziyaad Ben Eydatoula | Product Management Consultant",
+    template: "%s | Ziyaad Ben Eydatoula",
+  },
   description:
-    "Personal portfolio",
+    "Product management consultant based in London. I help product teams cut through the noise, ship faster, and build products customers actually want—securely and at scale.",
+  keywords: [
+    "Ziyaad Ben Eydatoula",
+    "Ziyaad Beneydatoula",
+    "Zi",
+    "product management consultant",
+    "product manager London",
+    "product leadership",
+    "product strategy",
+    "go-to-market",
+    "B2B SaaS product",
+  ],
+  authors: [{ name: "Ziyaad Ben Eydatoula", url: "https://ziyaadbeneydatoula.com" }],
+  creator: "Ziyaad Ben Eydatoula",
+  publisher: "Ziyaad Ben Eydatoula",
+  openGraph: {
+    type: "website",
+    url: "https://ziyaadbeneydatoula.com",
+    title: "Ziyaad Ben Eydatoula | Product Management Consultant",
+    description:
+      "Product management consultant based in London. I help product teams cut through the noise, ship faster, and build products customers actually want—securely and at scale.",
+    siteName: "Ziyaad Ben Eydatoula",
+    locale: "en_GB",
+    images: [
+      {
+        url: "/images/og-image.jpg", // make sure this file exists
+        width: 1200,
+        height: 630,
+        alt: "Ziyaad Ben Eydatoula – Product Management Consultant",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@The_Zi",
+    creator: "@The_Zi",
+    title: "Ziyaad Ben Eydatoula | Product Management Consultant",
+    description:
+      "Product management consultant based in London. I help product teams cut through the noise, ship faster, and build products customers actually want—securely and at scale.",
+    images: ["/images/og-image.jpg"],
+  },
+  alternates: {
+    canonical: "https://ziyaadbeneydatoula.com",
+  },
   icons: {
-    // main favicons
     icon: [
       {
         url: "/images/favicon-16x16.png",
@@ -30,7 +77,6 @@ export const metadata: Metadata = {
       {
         url: "/favicon.ico",
       },
-      // theme-aware app icon
       {
         url: "/images/icon-light-32x32.png",
         media: "(prefers-color-scheme: light)",
@@ -66,15 +112,19 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${_geist.className} antialiased`}>
-        <ThemeProvider defaultTheme="system" storageKey="zi-portfolio-theme">
+        <ThemeProvider defaultTheme="dark" storageKey="zi-portfolio-theme">
           <SiteHeader />
           <main className="min-h-screen">{children}</main>
           <SiteFooter />
           <CookieConsent />
         </ThemeProvider>
+
+        <AnalyticsProvider gaId={gaId} />
         <Analytics />
       </body>
     </html>

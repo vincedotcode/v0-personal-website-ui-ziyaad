@@ -1,29 +1,35 @@
 import Link from "next/link"
-import { Github, Linkedin, Twitter, Mail } from 'lucide-react'
+import { Linkedin, Twitter, Mail } from "lucide-react"
 
 export function SiteFooter() {
+  const year = new Date().getFullYear()
+
   return (
     <footer className="border-t border-border/40 bg-background">
-      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 max-w-7xl">
+      <div className="container mx-auto max-w-7xl px-4 py-12 md:px-6 lg:px-8">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* About Section */}
+          {/* Column 1 – About & Brand */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold">Zi's Portfolio</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Building beautiful and functional web experiences with modern technologies.
+            <h3 className="text-sm font-semibold">Ship Products That Matter</h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              I help product teams cut through the noise, ship faster, and build things
+              customers genuinely want. No fluff. No theory. Just proven frameworks that work.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              📍Based in London, U.K. 🌍 Available globally
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* Column 2 – Navigation */}
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold">Quick Links</h3>
+            <h3 className="text-sm font-semibold">Navigation</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  href="/about"
+                  href="/services"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  About
+                  Services
                 </Link>
               </li>
               <li>
@@ -36,10 +42,10 @@ export function SiteFooter() {
               </li>
               <li>
                 <Link
-                  href="/blog"
+                  href="/about"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  Blog
+                  About
                 </Link>
               </li>
               <li>
@@ -47,58 +53,50 @@ export function SiteFooter() {
                   href="/touchbase"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  Contact
+                  Touch Base
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Column 3 – Resources */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
-                  href="/tutorials"
+                  href="/articles"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  Tutorials
+                  Articles
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/resources"
+                  href="/templates"
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  Resources
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/testimonials"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Testimonials
+                  Templates
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Social Links */}
+          {/* Column 4 – Connect */}
           <div className="space-y-3">
             <h3 className="text-sm font-semibold">Connect</h3>
+            <p className="text-sm text-muted-foreground">
+              Email:{" "}
+              <a
+                href="mailto:zi@ziyaadbeneydatoula.com"
+                className="underline-offset-2 hover:underline"
+              >
+                zi@ziyaadbeneydatoula.com
+              </a>
+            </p>
             <div className="flex gap-3">
               <Link
-                href="https://github.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-                aria-label="GitHub"
-              >
-                <Github className="h-5 w-5" />
-              </Link>
-              <Link
-                href="https://linkedin.com"
+                href="https://www.linkedin.com/in/ziyaadbeneydatoula/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
@@ -107,7 +105,7 @@ export function SiteFooter() {
                 <Linkedin className="h-5 w-5" />
               </Link>
               <Link
-                href="https://twitter.com"
+                href="https://twitter.com/The_Zi"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
@@ -115,20 +113,47 @@ export function SiteFooter() {
               >
                 <Twitter className="h-5 w-5" />
               </Link>
-              <Link
-                href="mailto:contact@example.com"
+              <a
+                href="mailto:zi@ziyaadbeneydatoula.com"
                 className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                 aria-label="Email"
               >
                 <Mail className="h-5 w-5" />
-              </Link>
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="mt-8 border-t pt-8 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Zi's Portfolio. All rights reserved.</p>
-        </div>
+        {/* Bottom bar */}
+        <div className="mt-8 border-t pt-6 text-center text-xs text-muted-foreground md:flex md items-center md:justify-between md:text-left">
+  <p className="mb-3 md:mb-0">
+    © {year} Ziyaad Ben Eydatoula. All rights reserved.
+  </p>
+
+  <div className="flex flex-wrap items-center justify-center gap-4">
+    <Link
+      href="/privacy"
+      className="transition-colors hover:text-foreground"
+    >
+      Privacy Policy
+    </Link>
+
+    <Link
+      href="/cookies"
+      className="transition-colors hover:text-foreground"
+    >
+      Cookie Policy
+    </Link>
+
+    <Link
+      href="/terms"
+      className="transition-colors hover:text-foreground"
+    >
+      Terms of Use
+    </Link>
+  </div>
+</div>
+
       </div>
     </footer>
   )
