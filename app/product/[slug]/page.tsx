@@ -1,11 +1,18 @@
 // app/product/[slug]/page.tsx
 
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
-import { getPostBySlug, getPostsByTag, StrapiPost } from "@/lib/strapi";
+import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import React from "react";
+
+import {
+  getPostBySlug,
+  getPostsByTag,
+  StrapiPost,
+  getMediaUrl,
+} from "@/lib/strapi";
 
 export const dynamic = "force-dynamic";
 
@@ -43,156 +50,210 @@ export async function generateMetadata({ params }: ProductPostPageProps) {
 
 function PostMeta({ post }: { post: StrapiPost }) {
   const tags = post.tags ?? [];
-  const primaryTag = tags[0]?.name ?? "Product";
+  const primaryTag = tags[0]?.name ?? "product";
 
   return (
-    <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-      <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">
+    <div className="flex flex-wrap items-center gap-2">
+      <span className="inline-flex items-center rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 px-3 py-1 text-xs font-semibold text-purple-300 uppercase tracking-wider">
         {primaryTag}
       </span>
       {tags.slice(1).map((tag) => (
         <span
           key={tag.id}
-          className="inline-flex items-center rounded-full border border-border/60 bg-background/80 px-3 py-1"
+          className="inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/60 backdrop-blur-sm hover:border-white/20 hover:bg-white/10 transition-all"
         >
           {tag.name}
         </span>
       ))}
-      <span className="inline-flex items-center rounded-full border border-border/60 bg-background/80 px-3 py-1">
-        Published {formatDate(post.publishedAt)}
-      </span>
-      <span className="inline-flex items-center rounded-full border border-border/60 bg-background/80 px-3 py-1">
-        Updated {formatDate(post.updatedAt)}
-      </span>
-      {post.readingTimeMinutes && (
-        <span className="inline-flex items-center rounded-full border border-border/60 bg-background/80 px-3 py-1">
-          {post.readingTimeMinutes} min read
-        </span>
-      )}
-      {post.format && (
-        <span className="inline-flex items-center rounded-full border border-border/60 bg-background/80 px-3 py-1 capitalize">
-          {post.format}
-        </span>
-      )}
+      <div className="flex items-center gap-2 text-xs text-white/50 ml-auto">
+        <span>Published {formatDate(post.publishedAt)}</span>
+        {post.readingTimeMinutes && (
+          <>
+            <span className="text-white/30">•</span>
+            <span>{post.readingTimeMinutes} min read</span>
+          </>
+        )}
+      </div>
     </div>
   );
 }
 
 function PostHeader({ post }: { post: StrapiPost }) {
+  const mediaUrl = getMediaUrl(post.featuredImage);
+
   return (
-    <header className="space-y-4">
+    <header className="space-y-8 mb-12">
       <Link
         href="/product"
-        className="inline-flex items-center text-xs font-medium text-muted-foreground hover:text-primary"
+        className="inline-flex items-center gap-2 text-sm font-medium text-white/50 hover:text-white transition-colors group"
       >
-        ← Back to Product
+        <span className="group-hover:-translate-x-1 transition-transform">←</span>
+        Back to Product
       </Link>
-      <div className="space-y-3">
-        <p className="text-xs uppercase tracking-[0.25em] text-primary">
-          Product operating system
-        </p>
-        <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground">
-          {post.title}
-        </h1>
+
+      <div className="space-y-5">
+        <div className="space-y-2">
+          <p className="text-xs uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 font-semibold">
+            Product Operating System
+          </p>
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1]">
+            {post.title}
+          </h1>
+        </div>
+
         {post.subtitle && (
-          <p className="text-base text-muted-foreground max-w-2xl">
+          <p className="text-lg sm:text-xl text-white/60 max-w-3xl leading-relaxed font-light">
             {post.subtitle}
           </p>
         )}
       </div>
+
       <PostMeta post={post} />
+
+      {mediaUrl && (
+        <div className="mt-10 group relative">
+          <div className="absolute -inset-1 bg-gradient-to-r from-purple-600/20 via-pink-600/20 to-purple-600/20 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-black/50 backdrop-blur-xl shadow-2xl group-hover:border-white/20 transition-all duration-300">
+            <Image
+              src={mediaUrl}
+              alt={
+                post.featuredImage?.alternativeText ||
+                `Cover image for ${post.title}`
+              }
+              width={post.featuredImage?.width ?? 1200}
+              height={post.featuredImage?.height ?? 630}
+              className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+          </div>
+        </div>
+      )}
     </header>
   );
 }
 
 /**
- * Renders Strapi "content" as either:
- * - Markdown (using react-markdown + GFM) – good for your example payload
- * - Or raw HTML if the string already looks like HTML
- *
- * Images (`![]()` or `<img>`) are rendered in a full-width, nice layout.
+ * Rich markdown content renderer with modern styling
  */
 function PostContent({ content }: { content: string }) {
   const looksLikeHtml = /<\/?[a-z][\s\S]*>/i.test(content);
 
-  if (looksLikeHtml) {
-    // Strapi richtext → HTML path (handles <p>, <h2>, <ul>, <img>, etc.)
-    return (
-      <div
-        className="prose prose-neutral max-w-none prose-headings:scroll-mt-20 prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-sm prose-img:rounded-2xl prose-img:border prose-img:border-border/60 prose-img:shadow-sm"
-        dangerouslySetInnerHTML={{ __html: content }}
-      />
-    );
-  }
-
-  // Markdown path – matches the JSON you pasted (###, *, --- etc.)
   return (
-    <div className="prose prose-neutral max-w-none prose-headings:scroll-mt-20 prose-a:text-primary hover:prose-a:text-primary/80 prose-code:text-sm prose-img:rounded-2xl prose-img:border prose-img:border-border/60 prose-img:shadow-sm">
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        components={{
-          h1: ({ node, ...props }) => (
-            <h1 className="text-3xl font-semibold tracking-tight" {...props} />
-          ),
-          h2: ({ node, ...props }) => (
-            <h2 className="mt-10 text-2xl font-semibold tracking-tight" {...props} />
-          ),
-          h3: ({ node, ...props }) => (
-            <h3 className="mt-8 text-xl font-semibold tracking-tight" {...props} />
-          ),
-          p: ({ node, ...props }) => <p className="leading-relaxed" {...props} />,
-          ul: ({ node, ...props }) => (
-            <ul className="list-disc pl-6 space-y-1" {...props} />
-          ),
-          ol: ({ node, ...props }) => (
-            <ol className="list-decimal pl-6 space-y-1" {...props} />
-          ),
-          li: ({ node, ...props }) => <li className="leading-relaxed" {...props} />,
-          a: ({ node, ...props }) => (
-            <a
-              className="font-medium text-primary underline-offset-2 hover:underline"
-              {...props}
-            />
-          ),
-          img: ({ node, ...props }) => (
-            <figure className="my-8">
-              {/* For now, render plain <img>; if your URLs are relative from Strapi,
-                 make them absolute at content level or wrap here. */}
-              <img
+    <div className="prose prose-invert max-w-none prose-lg prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-4xl prose-h1:mt-12 prose-h1:mb-6 prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-5 prose-h2:text-transparent prose-h2:bg-clip-text prose-h2:bg-gradient-to-r prose-h2:from-purple-300 prose-h2:to-pink-300 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-h3:text-white prose-p:text-base prose-p:leading-8 prose-p:text-white/80 prose-p:my-6 prose-li:text-white/80 prose-li:my-2 prose-li:marker:text-purple-400 prose-strong:text-white prose-strong:font-semibold prose-em:text-white/90 prose-em:italic prose-blockquote:border-l-4 prose-blockquote:border-purple-500/50 prose-blockquote:bg-purple-500/10 prose-blockquote:px-6 prose-blockquote:py-4 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-white/70 prose-blockquote:my-8 prose-hr:border-white/10 prose-hr:my-8 prose-code:bg-white/10 prose-code:text-purple-300 prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-pre:bg-black/80 prose-pre:border prose-pre:border-white/10 prose-pre:rounded-xl prose-pre:shadow-2xl prose-pre:overflow-x-auto prose-img:rounded-2xl prose-img:border prose-img:border-white/10 prose-img:shadow-lg prose-img:my-8 prose-a:text-purple-400 prose-a:no-underline prose-a:font-medium hover:prose-a:text-pink-400 prose-a:transition-colors">
+      {looksLikeHtml ? (
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      ) : (
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            h1: ({ children }) => (
+              <h1 className="text-4xl font-bold mt-12 mb-6 text-white">
+                {children}
+              </h1>
+            ),
+            h2: ({ children }) => (
+              <h2 className="text-3xl font-bold mt-10 mb-5 text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300">
+                {children}
+              </h2>
+            ),
+            h3: ({ children }) => (
+              <h3 className="text-2xl font-bold mt-8 mb-4 text-white">
+                {children}
+              </h3>
+            ),
+            h4: ({ children }) => (
+              <h4 className="text-xl font-bold mt-6 mb-3 text-white">
+                {children}
+              </h4>
+            ),
+            p: ({ children }) => (
+              <p className="text-base leading-8 text-white/80 my-6">
+                {children}
+              </p>
+            ),
+            ul: ({ children }) => (
+              <ul className="list-disc list-inside space-y-3 my-6 text-white/80">
+                {children}
+              </ul>
+            ),
+            ol: ({ children }) => (
+              <ol className="list-decimal list-inside space-y-3 my-6 text-white/80">
+                {children}
+              </ol>
+            ),
+            li: ({ children }) => (
+              <li className="text-base text-white/80 my-2 ml-2">
+                {children}
+              </li>
+            ),
+            blockquote: ({ children }) => (
+              <blockquote className="border-l-4 border-purple-500/50 bg-purple-500/10 px-6 py-4 rounded-r-lg my-8 text-white/70 italic">
+                {children}
+              </blockquote>
+            ),
+            code: ({ inline, children, ...props }: any) => (
+              inline ? (
+                <code className="bg-white/10 text-purple-300 px-2 py-1 rounded text-sm font-mono">
+                  {children}
+                </code>
+              ) : (
+                <pre className="bg-black/80 border border-white/10 rounded-xl p-4 overflow-x-auto my-6 shadow-2xl">
+                  <code className="text-white/90 font-mono text-sm">
+                    {children}
+                  </code>
+                </pre>
+              )
+            ),
+            img: ({ node, ...props }: any) => (
+              <figure className="my-8">
+                <img
+                  {...props}
+                  className="w-full rounded-2xl border border-white/10 shadow-lg"
+                />
+                {props.alt && (
+                  <figcaption className="mt-3 text-center text-sm text-white/50">
+                    {props.alt}
+                  </figcaption>
+                )}
+              </figure>
+            ),
+            a: ({ children, href, ...props }: any) => (
+              <a
+                href={href}
+                className="text-purple-400 hover:text-pink-400 font-medium transition-colors underline underline-offset-4 hover:underline-offset-2"
                 {...props}
-                className="mx-auto max-h-[480px] w-auto rounded-2xl border border-border/60 shadow-sm"
-              />
-              {props.alt && (
-                <figcaption className="mt-2 text-center text-xs text-muted-foreground">
-                  {props.alt}
-                </figcaption>
-              )}
-            </figure>
-          ),
-          hr: ({ node, ...props }) => (
-            <hr className="my-8 border-border/60" {...props} />
-          ),
-          blockquote: ({ node, ...props }) => (
-            <blockquote
-              className="border-l-4 border-primary/40 bg-primary/5 px-4 py-3 text-sm italic text-muted-foreground"
-              {...props}
-            />
-          ),
-          code: ({ node, className, ...props }: React.ComponentPropsWithoutRef<"code"> & { node?: any }) => {
-            const isInline = !className || !className.includes("language-");
-            return isInline ? (
-              <code className="rounded bg-muted px-1 py-0.5 text-xs" {...props} />
-            ) : (
-              <code
-                className="block overflow-x-auto rounded-lg bg-muted/70 p-3 text-xs"
-                {...props}
-              />
-            );
-          },
-        }}
-      >
-        {content}
-      </ReactMarkdown>
+              >
+                {children}
+              </a>
+            ),
+            table: ({ children }) => (
+              <div className="overflow-x-auto my-8 rounded-xl border border-white/10">
+                <table className="w-full">
+                  {children}
+                </table>
+              </div>
+            ),
+            thead: ({ children }) => (
+              <thead className="bg-white/5 border-b border-white/10">
+                {children}
+              </thead>
+            ),
+            th: ({ children }) => (
+              <th className="px-4 py-3 text-left text-white font-semibold">
+                {children}
+              </th>
+            ),
+            td: ({ children }) => (
+              <td className="px-4 py-3 text-white/80 border-t border-white/5">
+                {children}
+              </td>
+            ),
+          }}
+        >
+          {content}
+        </ReactMarkdown>
+      )}
     </div>
   );
 }
@@ -200,14 +261,14 @@ function PostContent({ content }: { content: string }) {
 function PostBody({ post }: { post: StrapiPost }) {
   if (!post.content) {
     return (
-      <p className="mt-6 text-sm text-muted-foreground">
+      <p className="mt-12 text-lg text-white/40 text-center py-16">
         This post doesn&apos;t have content yet.
       </p>
     );
   }
 
   return (
-    <article className="mt-8 rounded-3xl border border-border/70 bg-background/80 p-6 sm:p-8">
+    <article className="mt-12 bg-gradient-to-b from-white/5 to-transparent border border-white/10 rounded-2xl p-8 sm:p-12 backdrop-blur-lg shadow-2xl">
       <PostContent content={post.content} />
     </article>
   );
@@ -217,30 +278,27 @@ function RelatedCard({ post }: { post: StrapiPost }) {
   const primaryTag = post.tags?.[0]?.name ?? "Product";
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-border/70 bg-gradient-to-br from-background via-background/80 to-background shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(236,72,153,0.08),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(79,70,229,0.08),transparent_35%)] opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      <div className="relative flex flex-col gap-3 p-5">
-        <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">
+    <article className="group relative overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-white/5 via-white/2 to-transparent backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/30">
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/10 via-transparent to-pink-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="relative flex flex-col gap-4 p-6">
+        <div className="flex items-center justify-between">
+          <span className="inline-flex items-center rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 px-3 py-1 text-xs font-semibold text-purple-300 uppercase">
             {primaryTag}
           </span>
-          <span>{formatDate(post.publishedAt)}</span>
+          <span className="text-xs text-white/40">{formatDate(post.publishedAt)}</span>
         </div>
-        <h3 className="text-sm font-semibold tracking-tight">
-          <Link
-            href={`/product/${post.slug}`}
-            className="transition-colors hover:text-primary"
-          >
+        <h3 className="text-lg font-semibold tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-300 group-hover:to-pink-300 transition-all">
+          <Link href={`/product/${post.slug}`}>
             {post.title}
           </Link>
         </h3>
         {post.excerpt && (
-          <p className="line-clamp-3 text-xs text-muted-foreground">
+          <p className="line-clamp-3 text-sm text-white/60">
             {post.excerpt}
           </p>
         )}
         {post.readingTimeMinutes && (
-          <span className="mt-1 text-[11px] text-muted-foreground">
+          <span className="mt-2 text-xs text-white/40">
             {post.readingTimeMinutes} min read
           </span>
         )}
@@ -256,24 +314,24 @@ async function RelatedPosts({ currentPostId }: { currentPostId: number }) {
   if (!posts.length) return null;
 
   return (
-    <section className="mt-12 space-y-4">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-primary">
+    <section className="mt-16 space-y-8">
+      <div className="flex items-end justify-between gap-4">
+        <div className="space-y-2">
+          <p className="text-xs uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 font-semibold">
             More from product
           </p>
-          <h2 className="text-lg font-semibold tracking-tight">
+          <h2 className="text-3xl font-bold text-white">
             Keep sharpening the craft
           </h2>
         </div>
         <Link
           href="/product"
-          className="text-xs font-medium text-muted-foreground hover:text-primary"
+          className="text-sm font-medium text-purple-400 hover:text-pink-400 transition-colors whitespace-nowrap"
         >
           View all →
         </Link>
       </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <RelatedCard key={post.id} post={post} />
         ))}
@@ -290,23 +348,23 @@ export default async function ProductPostPage({ params }: ProductPostPageProps) 
   }
 
   const post = await getPostBySlug(slug);
-
   if (!post) {
     notFound();
   }
 
   return (
-    <section className="container mx-auto max-w-4xl px-4 py-16">
-      <div className="relative overflow-hidden rounded-3xl border border-border/60 bg-gradient-to-br from-primary/15 via-background to-background p-6 sm:p-8 shadow-lg">
-        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.2),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.15),transparent_35%)]" />
-        <div className="relative">
-          <PostHeader post={post} />
-          <PostBody post={post} />
-        </div>
+    <section className="min-h-screen bg-black relative overflow-hidden">
+      {/* Animated gradient background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
       </div>
 
-      {/* Related posts from /product tagged content */}
-      <RelatedPosts currentPostId={post.id} />
+      <div className="container mx-auto max-w-4xl px-4 py-16 space-y-10">
+        <PostHeader post={post} />
+        <PostBody post={post} />
+        <RelatedPosts currentPostId={post.id} />
+      </div>
     </section>
   );
 }

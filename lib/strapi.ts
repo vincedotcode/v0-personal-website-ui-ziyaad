@@ -7,6 +7,17 @@ export type StrapiTag = {
   description?: string | null;
 };
 
+export type StrapiMedia = {
+  id: number;
+  name: string;
+  url: string;
+  alternativeText?: string | null;
+  width?: number | null;
+  height?: number | null;
+  mime?: string | null;
+  size?: number | null;
+};
+
 export type StrapiPost = {
   id: number;
   documentId: string;
@@ -27,6 +38,7 @@ export type StrapiPost = {
   updatedAt: string;
   publishedAt: string;
   tags?: StrapiTag[];
+  featuredImage?: StrapiMedia | null;
 };
 
 export type StrapiListResponse<T> = {
@@ -45,6 +57,15 @@ const STRAPI_URL =
   process.env.NEXT_PUBLIC_STRAPI_URL ?? "http://localhost:1337";
 
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
+
+/**
+ * Helper to get an absolute media URL from Strapi.
+ */
+export function getMediaUrl(media?: StrapiMedia | null): string | null {
+  if (!media?.url) return null;
+  if (media.url.startsWith("http")) return media.url;
+  return `${STRAPI_URL}${media.url}`;
+}
 
 /**
  * Universal Strapi fetcher with auth + no-store caching + logging
@@ -82,8 +103,7 @@ async function strapiFetch<T>(
 /**
  * Get posts filtered by tag slug (product, cook, write, dataprotection, etc.)
  *
- * Matches Strapi REST:
- * /api/posts?filters[tags][slug][$eq]=product&populate=tags
+ * Populates: tags and featuredImage
  */
 export async function getPostsByTag(
   tagSlug: string,
@@ -95,7 +115,8 @@ export async function getPostsByTag(
     "pagination[pageSize]": String(pageSize),
     "sort[0]": "publishedAt:desc",
     "filters[tags][slug][$eq]": tagSlug,
-    "populate": "tags",
+    "populate[0]": "tags",
+    "populate[1]": "featuredImage",
   });
 
   return strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`);
@@ -111,9 +132,9 @@ export async function getPortfolioEntry() {
 
 /**
  * Get any single post by its slug
+ *
+ * Populates: tags and featuredImage
  */
-// lib/strapi.ts
-
 export async function getPostBySlug(slug: string | undefined | null) {
   // Guard against invalid slugs
   if (!slug || slug === "undefined" || slug === "null") {
@@ -122,7 +143,8 @@ export async function getPostBySlug(slug: string | undefined | null) {
 
   const params = new URLSearchParams({
     "filters[slug][$eq]": slug,
-    "populate": "tags",
+    "populate[0]": "tags",
+    "populate[1]": "featuredImage",
   });
 
   const res = await strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`);
@@ -130,11 +152,9 @@ export async function getPostBySlug(slug: string | undefined | null) {
   return res.data[0] ?? null;
 }
 
-
 /**
  * List all tags (optional, if needed for UI)
  */
 export async function getAllTags() {
   return strapiFetch<StrapiTag>(`/api/tags`);
 }
-
