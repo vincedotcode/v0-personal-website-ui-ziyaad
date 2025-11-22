@@ -112,15 +112,24 @@ export async function getPortfolioEntry() {
 /**
  * Get any single post by its slug
  */
-export async function getPostBySlug(slug: string) {
+// lib/strapi.ts
+
+export async function getPostBySlug(slug: string | undefined | null) {
+  // Guard against invalid slugs
+  if (!slug || slug === "undefined" || slug === "null") {
+    return null;
+  }
+
   const params = new URLSearchParams({
     "filters[slug][$eq]": slug,
     "populate": "tags",
   });
 
   const res = await strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`);
+
   return res.data[0] ?? null;
 }
+
 
 /**
  * List all tags (optional, if needed for UI)
@@ -128,3 +137,4 @@ export async function getPostBySlug(slug: string) {
 export async function getAllTags() {
   return strapiFetch<StrapiTag>(`/api/tags`);
 }
+

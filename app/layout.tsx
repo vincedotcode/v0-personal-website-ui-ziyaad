@@ -117,7 +117,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${_geist.className} antialiased`}>
-        <ThemeProvider defaultTheme="dark" storageKey="zi-portfolio-theme">
+        <ThemeProvider defaultTheme="light" storageKey="zi-portfolio-theme">
           <SiteHeader />
           <main className="min-h-screen">{children}</main>
           <SiteFooter />

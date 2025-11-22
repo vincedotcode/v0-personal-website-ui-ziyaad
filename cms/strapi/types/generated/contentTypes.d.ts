@@ -498,6 +498,7 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     readingTimeMinutes: Schema.Attribute.Integer;
     seoDescription: Schema.Attribute.Text;
     seoTitle: Schema.Attribute.String;
+    slug: Schema.Attribute.UID & Schema.Attribute.Required;
     tags: Schema.Attribute.Relation<'manyToMany', 'api::tag.tag'>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;

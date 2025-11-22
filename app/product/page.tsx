@@ -39,12 +39,16 @@ function ProductHero() {
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.15),transparent_40%),radial-gradient(circle_at_80%_0%,rgba(236,72,153,0.12),transparent_35%)]" />
       <div className="relative grid gap-8 lg:grid-cols-[3fr,2fr] items-center">
         <div className="space-y-4">
-          <p className="text-xs uppercase tracking-[0.25em] text-primary">Product operating system</p>
+          <p className="text-xs uppercase tracking-[0.25em] text-primary">
+            Product operating system
+          </p>
           <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-foreground">
             Ship sharper product outcomes, faster.
           </h1>
           <p className="text-base text-muted-foreground max-w-3xl">
-            Playbooks, research, experiments, and delivery tactics from real launches. Learn how to validate bets, align teams, and measure what matters without the fluff.
+            Playbooks, research, experiments, and delivery tactics from real
+            launches. Learn how to validate bets, align teams, and measure what
+            matters without the fluff.
           </p>
           <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1">
@@ -53,7 +57,7 @@ function ProductHero() {
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1">
               <span className="h-2 w-2 rounded-full bg-primary" />
-              Experiments & metrics
+              Experiments &amp; metrics
             </span>
             <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1">
               <span className="h-2 w-2 rounded-full bg-pink-400" />
@@ -65,14 +69,23 @@ function ProductHero() {
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-primary/20 via-transparent to-pink-500/10 blur-2xl" />
           <div className="relative space-y-3">
             <p className="text-sm text-muted-foreground">Featured playbook</p>
-            <p className="text-xl font-semibold">Build a metrics stack that cuts through vanity noise.</p>
+            <p className="text-xl font-semibold">
+              Build a metrics stack that cuts through vanity noise.
+            </p>
             <p className="text-sm text-muted-foreground">
-              Define the signals that prove traction, set leading indicators, and connect experiments to impact.
+              Define the signals that prove traction, set leading indicators,
+              and connect experiments to impact.
             </p>
             <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
-              <span className="rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">North Star metrics</span>
-              <span className="rounded-full bg-background/80 border border-border px-3 py-1">Dashboards that drive action</span>
-              <span className="rounded-full bg-background/80 border border-border px-3 py-1">Decision cadence</span>
+              <span className="rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">
+                North Star metrics
+              </span>
+              <span className="rounded-full bg-background/80 border border-border px-3 py-1">
+                Dashboards that drive action
+              </span>
+              <span className="rounded-full bg-background/80 border border-border px-3 py-1">
+                Decision cadence
+              </span>
             </div>
           </div>
         </div>
@@ -90,17 +103,28 @@ function Spotlight({ post }: { post: StrapiPost }) {
       <div className="relative flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
         <div className="flex-1 space-y-3">
           <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">{firstTag}</span>
-            <span className="rounded-full bg-background/80 px-3 py-1 border border-border/60">Featured</span>
-            <span className="rounded-full bg-background/80 px-3 py-1 border border-border/60">Updated {formatDate(post.updatedAt)}</span>
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 font-medium text-primary">
+              {firstTag}
+            </span>
+            <span className="rounded-full bg-background/80 px-3 py-1 border border-border/60">
+              Featured
+            </span>
+            <span className="rounded-full bg-background/80 px-3 py-1 border border-border/60">
+              Updated {formatDate(post.updatedAt)}
+            </span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
-            <Link href={`/product/${post.slug}`} className="hover:text-primary transition-colors">
+            <Link
+              href={`/product/${post.slug}`}
+              className="hover:text-primary transition-colors"
+            >
               {post.title}
             </Link>
           </h2>
           {post.subtitle && (
-            <p className="text-base text-muted-foreground max-w-3xl">{post.subtitle}</p>
+            <p className="text-base text-muted-foreground max-w-3xl">
+              {post.subtitle}
+            </p>
           )}
           <div className="flex flex-wrap gap-3 text-xs text-muted-foreground">
             {post.readingTimeMinutes && (
@@ -149,7 +173,9 @@ function FilterPills({
         <Link
           href={buildQuery({ page: "1", tag: undefined }, currentParams)}
           className={`inline-flex items-center rounded-full border px-3 py-1 transition-colors ${
-            !selectedTag ? "border-primary/60 bg-primary/10 text-primary" : "border-border/60 hover:border-primary/50"
+            !selectedTag
+              ? "border-primary/60 bg-primary/10 text-primary"
+              : "border-border/60 hover:border-primary/50"
           }`}
         >
           All
@@ -178,7 +204,8 @@ function FilterPills({
               currentParams,
             )}
             className={`inline-flex items-center rounded-full border px-3 py-1 capitalize transition-colors ${
-              (format === "all" && !selectedFormat) || selectedFormat === format
+              (format === "all" && !selectedFormat) ||
+              selectedFormat === format
                 ? "border-primary/60 bg-primary/10 text-primary"
                 : "border-border/60 hover:border-primary/50"
             }`}
@@ -226,7 +253,9 @@ function ProductCard({ post }: { post: StrapiPost }) {
             <p className="text-sm text-muted-foreground">{post.subtitle}</p>
           )}
           {post.excerpt && (
-            <p className="text-sm text-muted-foreground line-clamp-3">{post.excerpt}</p>
+            <p className="text-sm text-muted-foreground line-clamp-3">
+              {post.excerpt}
+            </p>
           )}
         </div>
 
@@ -253,7 +282,13 @@ function ProductCard({ post }: { post: StrapiPost }) {
   );
 }
 
-function Pagination({ pagination, currentParams }: { pagination?: PostsResponse["meta"]["pagination"]; currentParams: SearchParams; }) {
+function Pagination({
+  pagination,
+  currentParams,
+}: {
+  pagination?: PostsResponse["meta"]["pagination"];
+  currentParams: SearchParams;
+}) {
   if (!pagination) return null;
   const { page, pageCount } = pagination;
   const hasNext = page < pageCount;
@@ -290,11 +325,20 @@ function EmptyState({ message }: { message: string }) {
 }
 
 export default async function ProductPage({
-  searchParams = {},
+  searchParams,
 }: {
-  searchParams?: SearchParams;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
-  const page = Math.max(Number(searchParams.page ?? "1"), 1);
+  // ✅ Unwrap dynamic searchParams Promise once
+  const raw = await searchParams;
+
+  const resolvedSearchParams: SearchParams = {
+    page: Array.isArray(raw.page) ? raw.page[0] : raw.page,
+    tag: Array.isArray(raw.tag) ? raw.tag[0] : raw.tag,
+    format: Array.isArray(raw.format) ? raw.format[0] : raw.format,
+  };
+
+  const page = Math.max(Number(resolvedSearchParams.page ?? "1"), 1);
   const pageSize = 9;
 
   let postsRes: PostsResponse | undefined;
@@ -313,7 +357,8 @@ export default async function ProductPage({
     );
   }
 
-  const posts = postsRes?.data ?? [];
+  // ✅ Filter out posts without a slug to avoid /product/undefined
+  const posts = (postsRes?.data ?? []).filter((post) => !!post.slug);
   const pagination = postsRes?.meta.pagination;
 
   if (!posts.length) {
@@ -328,8 +373,9 @@ export default async function ProductPage({
   const allTags = Array.from(
     new Set(posts.flatMap((post) => post.tags?.map((tag) => tag.name) ?? [])),
   );
-  const selectedTag = searchParams.tag;
-  const selectedFormat = searchParams.format;
+
+  const selectedTag = resolvedSearchParams.tag;
+  const selectedFormat = resolvedSearchParams.format;
 
   const filteredPosts = posts.filter((post) => {
     const matchesTag = selectedTag
@@ -341,7 +387,9 @@ export default async function ProductPage({
     return matchesTag && matchesFormat;
   });
 
-  const spotlight = filteredPosts.find((post) => post.isFeatured) ?? filteredPosts[0];
+  const spotlight =
+    filteredPosts.find((post) => post.isFeatured) ?? filteredPosts[0];
+
   const gridPosts = spotlight
     ? filteredPosts.filter((post) => post.id !== spotlight.id)
     : filteredPosts;
@@ -353,10 +401,16 @@ export default async function ProductPage({
       <div className="space-y-6">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.25em] text-primary">Product hub</p>
-            <h2 className="text-2xl font-semibold tracking-tight">Featured spotlight</h2>
+            <p className="text-xs uppercase tracking-[0.25em] text-primary">
+              Product hub
+            </p>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              Featured spotlight
+            </h2>
           </div>
-          <div className="text-sm text-muted-foreground">Curated experiments and breakdowns</div>
+          <div className="text-sm text-muted-foreground">
+            Curated experiments and breakdowns
+          </div>
         </div>
         {spotlight ? (
           <Spotlight post={spotlight} />
@@ -368,19 +422,25 @@ export default async function ProductPage({
       <div className="space-y-4">
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-3">
-            <p className="text-xs uppercase tracking-[0.25em] text-primary">Explore</p>
+            <p className="text-xs uppercase tracking-[0.25em] text-primary">
+              Explore
+            </p>
             <div className="h-px flex-1 bg-gradient-to-r from-primary/50 via-border to-transparent" />
           </div>
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold tracking-tight">Latest product drops</h2>
-            <p className="text-sm text-muted-foreground">Stay ahead with battle-tested patterns</p>
+            <h2 className="text-xl font-semibold tracking-tight">
+              Latest product drops
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Stay ahead with battle-tested patterns
+            </p>
           </div>
         </div>
         <FilterPills
           tags={allTags}
           selectedTag={selectedTag}
           selectedFormat={selectedFormat}
-          currentParams={searchParams}
+          currentParams={resolvedSearchParams}
         />
       </div>
 
@@ -394,7 +454,7 @@ export default async function ProductPage({
         </div>
       )}
 
-      <Pagination pagination={pagination} currentParams={searchParams} />
+      <Pagination pagination={pagination} currentParams={resolvedSearchParams} />
     </section>
   );
 }
