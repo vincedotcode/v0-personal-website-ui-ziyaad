@@ -483,6 +483,7 @@ export interface ApiPostPost extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     durationSeconds: Schema.Attribute.Integer;
+    excerpt: Schema.Attribute.Text;
     externalUrl: Schema.Attribute.Text;
     featuredImage: Schema.Attribute.Media<
       'images' | 'files' | 'videos' | 'audios'

@@ -1,0 +1,216 @@
+{
+  "tags": [
+    {
+      "name": "Product",
+      "slug": "product",
+      "description": "Product strategy and development"
+    },
+    {
+      "name": "Cook",
+      "slug": "cook",
+      "description": "Practical recipes and tactics"
+    },
+    {
+      "name": "Write",
+      "slug": "write",
+      "description": "Essays and long-form content"
+    },
+    {
+      "name": "Books",
+      "slug": "books",
+      "description": "Book reviews and summaries"
+    },
+    {
+      "name": "Data Protection",
+      "slug": "dataprotection",
+      "description": "Privacy and compliance guides"
+    },
+    {
+      "name": "Help",
+      "slug": "help",
+      "description": "Support and documentation"
+    },
+    {
+      "name": "Articles",
+      "slug": "articles",
+      "description": "News and updates"
+    },
+    {
+      "name": "Portfolio",
+      "slug": "portfolio",
+      "description": "Case studies and projects"
+    },
+    {
+      "name": "Podcasts",
+      "slug": "podcasts",
+      "description": "Audio conversations"
+    },
+    {
+      "name": "Media",
+      "slug": "media",
+      "description": "Visual gallery and photos"
+    }
+  ],
+  "posts": [
+    {
+      "title": "The Complete Guide to Product Strategy",
+      "slug": "complete-guide-product-strategy",
+      "format": "article",
+      "content": "# Introduction\n\nProduct strategy is the foundation of successful product development. It bridges the gap between business goals and user needs.\n\n## Key Principles\n\n1. **Understand your users** - Deep customer research is essential\n2. **Define clear outcomes** - What success looks like matters\n3. **Iterate based on data** - Let metrics guide decisions\n\n## Common Mistakes\n\n- Building without validation\n- Ignoring user feedback\n- Changing strategy too frequently\n\n## How to Build Your Strategy\n\n### Step 1: Research\nSpend time understanding your market, users, and competitors. Conduct interviews, surveys, and analyze data.\n\n### Step 2: Define Your Vision\nWhat do you want to achieve? Be specific about your goals and metrics.\n\n### Step 3: Plan Your Roadmap\nBreak your vision into quarters. What's now, next, and later?\n\n### Step 4: Execute\nBuild with purpose. Every feature should connect back to your strategy.\n\n### Step 5: Measure\nTrack your metrics. Are you moving the needle?\n\n## Conclusion\n\nA solid product strategy keeps teams aligned and focused on what matters most. Without it, you're just building features in the dark.",
+      "excerpt": "Master the fundamentals of product strategy and align your team around a shared vision.",
+      "subtitle": "Master the fundamentals",
+      "readingTimeMinutes": 12,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": true,
+      "seoTitle": "Complete Guide to Product Strategy | Zi",
+      "seoDescription": "Learn how to build effective product strategy that drives business results.",
+      "tags": ["product"]
+    },
+    {
+      "title": "Quick Recipe: User Validation Sprint",
+      "slug": "user-validation-sprint",
+      "format": "article",
+      "content": "# User Validation Sprint Recipe\n\n## Ingredients\n\n- 1 week of focused time\n- 10-15 target users\n- Clear hypotheses to test\n- 1 facilitator\n- Quiet meeting space\n- Recording device\n\n## Instructions\n\n### Day 1: Setup\n\n1. Define your research questions\n2. Create interview guide with 5-7 key questions\n3. Recruit participants via email, LinkedIn, or platforms\n4. Prepare recording setup\n\n### Day 2-4: Interviews\n\n1. Conduct 3-4 interviews per day (60 minutes each)\n2. Take detailed notes during calls\n3. Record with permission\n4. Ask follow-up questions\n5. Identify patterns emerging\n\n### Day 5: Synthesis\n\n1. Categorize findings into themes\n2. Highlight top 5 insights\n3. List contradictions and surprises\n4. Create action items\n5. Present to team\n\n## Pro Tips\n\n- Ask \"why\" at least 5 times\n- Listen more than you talk\n- Don't defend your product\n- Look for both validation and rejection\n- Record video, not just audio\n\n## Expected Outcome\n\nClear validation (or invalidation) of your assumptions before building. You should have:\n- Confidence in your problem understanding\n- Clear next steps\n- Team alignment on direction",
+      "excerpt": "A practical step-by-step recipe for validating your product ideas with users.",
+      "subtitle": "Validate before you build",
+      "readingTimeMinutes": 8,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": false,
+      "seoTitle": "User Validation Sprint Recipe",
+      "seoDescription": "Follow this recipe to validate your product ideas efficiently.",
+      "tags": ["cook"]
+    },
+    {
+      "title": "Thoughts on Building in Public",
+      "slug": "thoughts-building-public",
+      "format": "article",
+      "content": "Building in public has become a popular strategy for founders and makers. It's not just about transparency—it's about community, feedback, and accountability.\n\n## Why Build in Public?\n\nWhen you share your journey, you invite others into your story. You get real-time feedback, build an audience, and create accountability. People connect with the process, not just the product.\n\n### The Psychology\n\nHumans are drawn to stories. When you share your struggles and wins, people root for you. They become invested in your success.\n\n## The Challenges\n\nNot everything should be public. You need to balance transparency with strategic secrecy. Share your learnings, your struggles, but not your secret sauce.\n\n### What to Share\n- Your learnings and failures\n- Progress updates\n- User feedback insights\n- Behind-the-scenes stories\n\n### What Not to Share\n- Unreleased feature details\n- Customer data or secrets\n- Financial information\n- Sensitive tech decisions\n\n## The Paradox\n\nThe more vulnerable you are about your failures, the more people respect your wins. Building in public isn't about showcasing perfection—it's about showing the real journey.\n\n## How to Get Started\n\n1. Choose your platform (Twitter, LinkedIn, blog, newsletter)\n2. Commit to regular updates (weekly is good)\n3. Be authentic and specific\n4. Share numbers and learnings\n5. Engage with your community\n\n## Final Thoughts\n\nBuilding in public is a mindset shift. It requires courage, vulnerability, and a genuine desire to help others learn from your experience. If you're building something worthwhile, the world should know about it.",
+      "excerpt": "Why transparency in your building journey matters more than you think.",
+      "subtitle": "Embrace transparency",
+      "readingTimeMinutes": 7,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": true,
+      "seoTitle": "Building in Public: A Founder's Perspective",
+      "seoDescription": "Explore why building in public is transforming how products get built.",
+      "tags": ["write"]
+    },
+    {
+      "title": "Atomic Habits by James Clear - Book Review",
+      "slug": "atomic-habits-book-review",
+      "format": "article",
+      "content": "# Atomic Habits Review\n\n**Rating: 5/5 ⭐⭐⭐⭐⭐**\n\n## Summary\n\nAtomic Habits is a masterclass in behavior change. James Clear breaks down how tiny, incremental improvements compound into remarkable results over time.\n\n## Key Takeaways\n\n### 1. Identity-Based Habits\nFocus on who you want to become, not what you want to achieve. Instead of \"I want to run a marathon,\" think \"I am a runner.\"\n\nThis shift is powerful because identity drives behavior. When your habits align with your identity, they stick.\n\n### 2. The Habit Loop\n- **Cue** → Trigger that starts the habit\n- **Craving** → Desire for a change\n- **Response** → The habit itself\n- **Reward** → The benefit you receive\n\nUnderstanding this loop is crucial for changing behavior. To break a bad habit, you can:\n- Make the cue invisible\n- Make the craving unattractive\n- Make the response difficult\n- Make the reward unsatisfying\n\n### 3. Small Wins Matter\nA 1% improvement daily seems small, but compounds exponentially over time.\n- 1% better per day → 37x better in a year\n- 1% worse per day → 0.03x in a year\n\nThe key is consistency, not perfection.\n\n### 4. Implementation Intentions\nInstead of relying on motivation, create \"if-then\" statements:\n- \"If I finish breakfast, then I will immediately go to the gym\"\n- \"If I pour my coffee, then I will write 1 page\"\n\n## Best Quote\n\n\"You don't rise to the level of your goals. You fall to the level of your systems.\"\n\nThis is the most important insight. Goals are useless without systems.\n\n## Who Should Read This?\n\nAnyone looking to build better habits and break destructive ones. Whether you're a student, entrepreneur, or athlete, this book offers practical wisdom applicable to life.\n\n## Why It Matters to Product Builders\n\nProduct adoption is about building habits. Understanding how habits form helps you design products that users can't live without. Every engagement loop in your product should follow these principles.",
+      "excerpt": "How tiny habits lead to extraordinary results - and why it matters for product design.",
+      "subtitle": "Tiny changes, remarkable results",
+      "readingTimeMinutes": 10,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": false,
+      "seoTitle": "Atomic Habits Review - Key Insights for Builders",
+      "seoDescription": "Discover how Atomic Habits teaches us about behavior change and product adoption.",
+      "tags": ["books"]
+    },
+    {
+      "title": "GDPR Compliance Checklist for Product Teams",
+      "slug": "gdpr-compliance-checklist",
+      "format": "article",
+      "content": "# GDPR Compliance Checklist\n\n## Legal Basis\n\n- [ ] Documented legal basis for data processing\n- [ ] Consent forms in place (where applicable)\n- [ ] Privacy policy updated and accessible\n- [ ] Terms of service aligned with GDPR\n- [ ] Legitimate interest assessment documented\n\n## Data Collection\n\n- [ ] Minimal data collection (data minimization principle)\n- [ ] Clear disclosure on why data is collected\n- [ ] Opt-in (not opt-out) for non-essential processing\n- [ ] Age verification (13+ for regular, 16+ for marketing)\n- [ ] Data retention schedule created\n\n## User Rights\n\n- [ ] Right to access: Users can export their data\n- [ ] Right to deletion: Data deletion workflow implemented\n- [ ] Right to correction: Users can update their information\n- [ ] Right to portability: Data export in standard format (CSV, JSON)\n- [ ] Right to object: Users can opt-out of processing\n- [ ] Right to restrict: Users can limit data use\n\n## Data Protection\n\n- [ ] Data encryption in transit (HTTPS/TLS)\n- [ ] Encryption at rest for sensitive data\n- [ ] Regular security audits scheduled\n- [ ] Incident response plan documented\n- [ ] Penetration testing completed\n- [ ] Security training for all staff\n\n## Vendor Management\n\n- [ ] Data Processing Agreements (DPA) with all vendors\n- [ ] Vendor security assessments completed\n- [ ] Sub-processor list maintained and updated\n- [ ] Vendor audit rights documented\n- [ ] Vendor breach notification requirements clear\n\n## Documentation\n\n- [ ] Record of Processing Activities (ROPA) created\n- [ ] Data flow diagrams documented\n- [ ] Risk assessments completed\n- [ ] Data impact assessments (DPIA) for high-risk processing\n- [ ] Processor agreements in place\n\n## Staff Training\n\n- [ ] GDPR training completed by all staff\n- [ ] Data handling procedures documented and known\n- [ ] DPO (Data Protection Officer) designated if applicable\n- [ ] Regular privacy training scheduled\n\n## Regular Review\n\n- [ ] Quarterly compliance checks scheduled\n- [ ] Annual security audits\n- [ ] Incident log maintained\n- [ ] Privacy by design reviews\n- [ ] Privacy impact assessments updated\n\n## If Breached\n\n- [ ] Incident identified and contained\n- [ ] DPA notified within 72 hours\n- [ ] Users notified if high risk\n- [ ] Documentation of breach and response\n- [ ] Lessons learned captured",
+      "excerpt": "Complete checklist for ensuring your product meets GDPR requirements.",
+      "subtitle": "Your compliance roadmap",
+      "readingTimeMinutes": 15,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": false,
+      "seoTitle": "GDPR Compliance Checklist for Product Teams",
+      "seoDescription": "Ensure your product is GDPR compliant with this comprehensive checklist.",
+      "tags": ["dataprotection"]
+    },
+    {
+      "title": "Getting Started with Strapi CMS",
+      "slug": "getting-started-strapi",
+      "format": "article",
+      "content": "# Getting Started with Strapi\n\n## What is Strapi?\n\nStrapi is a headless CMS that gives you the power to manage content without limitations. Unlike traditional CMS platforms, Strapi gives you complete control over your content API.\n\n## Installation\n\nThe quickest way to get started:\n\n```bash\nnpm create strapi-app@latest my-app\ncd my-app\nnpm run develop\n```\n\nThis will:\n1. Create a new Strapi project\n2. Set up the database\n3. Start the development server on `http://localhost:1337`\n\n## Creating Your First Content Type\n\n1. Navigate to **Content-Type Builder** in the admin panel\n2. Click \"Create new collection type\"\n3. Name it (e.g., \"Article\")\n4. Add fields:\n   - Title (Text)\n   - Content (Rich text)\n   - Slug (UID)\n5. Save and restart the server\n\n## Setting Permissions\n\n1. Go to **Settings → Users & Permissions Plugin**\n2. Click **Roles**\n3. Click **Public** role\n4. Check the permissions for your content type:\n   - ✅ find\n   - ✅ findOne\n5. Click **Save**\n\n## Publishing Your First Entry\n\n1. Go to **Content Manager**\n2. Click your collection type (e.g., Article)\n3. Click **Create new entry**\n4. Fill in your content\n5. Click **Save**\n6. Click **Publish**\n\n## Accessing Your API\n\nOnce published, you can access your content via REST API:\n\n```\nGET http://localhost:1337/api/articles\nGET http://localhost:1337/api/articles/:id\n```\n\n## Common Gotchas\n\n- Always publish after schema changes\n- Use UID fields for slug generation (auto-filled)\n- Set proper relations for complex data structures\n- Remember to test unpublished content separately\n- Check permissions if API returns 403 Forbidden\n\n## Seeding Your Database\n\nUse seeding scripts to populate test data:\n\n```bash\nnode scripts/seed.js\n```\n\n## Next Steps\n\n- Explore plugins (SEO, GraphQL, etc.)\n- Set up webhooks for integrations\n- Configure CI/CD for deployment\n- Plan your content structure\n- Set up authentication for users\n\n## Useful Resources\n\n- [Official Strapi Documentation](https://docs.strapi.io)\n- [API Documentation](https://docs.strapi.io/developer-docs/latest/api/rest-api.html)\n- [Strapi Community](https://discord.strapi.io)",
+      "excerpt": "Start building with Strapi - the headless CMS for modern development.",
+      "subtitle": "From zero to hero",
+      "readingTimeMinutes": 9,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": false,
+      "seoTitle": "Getting Started with Strapi CMS",
+      "seoDescription": "Learn how to set up and start using Strapi for your content management.",
+      "tags": ["help"]
+    },
+    {
+      "title": "Breaking News: AI Adoption Accelerates Across Product Teams",
+      "slug": "ai-adoption-product-teams",
+      "format": "article",
+      "content": "# AI Adoption Accelerates Across Product Teams\n\nIn a recent survey of 500+ product leaders, 73% reported implementing AI tools in their workflow within the last 6 months.\n\n## Key Findings\n\n### Most Adopted Use Cases\n\n1. **Content generation and editing** - 45%\n2. **User research analysis** - 38%\n3. **Feature prioritization** - 31%\n4. **Bug detection** - 28%\n5. **Customer support automation** - 22%\n\n### Biggest Challenges\n\n- Data quality concerns - 52%\n- Integration with existing tools - 41%\n- Skills gap - 38%\n- Cost and ROI uncertainty - 34%\n- Privacy and security concerns - 29%\n\n## What Leading Teams Are Doing\n\nTop-performing teams are:\n\n- Establishing AI governance policies\n- Training teams on new tools and capabilities\n- Starting with low-risk implementations\n- Measuring ROI carefully before scaling\n- Building AI literacy across the organization\n\n## Industry Impact\n\n### Product Development\n- 40% faster feature prioritization\n- 35% reduction in time to market\n- 50% improvement in bug detection\n\n### Customer Experience\n- 60% faster support response times\n- 45% improvement in personalization\n- 55% increase in user satisfaction\n\n## The Future\n\nExperts predict AI will be table stakes by 2025, much like how data analytics is today. The question won't be \"should we use AI?\" but \"how do we use AI responsibly?\"\n\n## What This Means for Your Team\n\nNow is the time to experiment. Start small, measure results, and iterate. Here's a path:\n\n1. Identify one low-risk use case\n2. Run a 2-week pilot\n3. Measure impact\n4. Scale if successful\n5. Train your team\n6. Iterate and improve\n\n## Resources\n\n- [AI Product Leaders Community](https://example.com)\n- [Best Practices Guide](https://example.com)\n- [Tool Comparison](https://example.com)",
+      "excerpt": "How leading product teams are leveraging AI to work smarter.",
+      "subtitle": "The AI revolution in product",
+      "readingTimeMinutes": 6,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": true,
+      "seoTitle": "AI Adoption in Product Teams - Latest Trends",
+      "seoDescription": "Discover how product leaders are adopting AI tools and what you should know.",
+      "tags": ["articles"]
+    },
+    {
+      "title": "Design System Case Study: Building at Scale",
+      "slug": "design-system-case-study",
+      "format": "article",
+      "content": "# Design System Case Study: Building at Scale\n\n## The Challenge\n\nWith 50+ designers across multiple products, we faced a critical problem: inconsistency. Every product looked different. Every designer had their own way of solving problems. It was costing us time and confusing our users.\n\n## Our Approach\n\n### Phase 1: Audit & Inventory (4 weeks)\n\n- Catalogued all existing components across products\n- Identified duplicates and inconsistencies\n- Documented current patterns and variations\n- Surveyed designers on pain points\n\n**Key Finding**: 80+ variations of the same button component!\n\n### Phase 2: Foundation (6 weeks)\n\n- Established design principles\n- Created color system (12 primary colors + shades)\n- Defined typography scale (8 sizes)\n- Built spacing system (8px grid)\n- Set up icon library (150+ icons)\n\n### Phase 3: Component Library (12 weeks)\n\n- Prioritized components by usage\n- Designed 40+ core components\n- Created interactive documentation\n- Built reusable Figma components\n- Documented accessibility guidelines\n\n### Phase 4: Adoption (8 weeks)\n\n- Trained all 50+ designers\n- Integrated into design workflow\n- Set up CI/CD checks\n- Monitored adoption metrics\n- Gathered feedback and iterated\n\n## Results\n\n### Efficiency Gains\n- 60% faster design-to-dev handoff\n- 40% fewer design variations\n- 80% team adoption within 3 months\n- Estimated 200+ hours saved annually\n\n### Quality Improvements\n- 95% consistency across products\n- Improved accessibility compliance\n- Better user experience\n- Faster onboarding for new designers\n\n### Team Impact\n- Higher designer satisfaction\n- Reduced rework and iterations\n- Better collaboration\n- More time for strategic work\n\n## Key Learnings\n\n1. **Start with an audit** - Understand the current state first\n2. **Get buy-in early** - Involve stakeholders from the beginning\n3. **Make tools frictionless** - The easier it is to use, the more it gets used\n4. **Keep iterating** - Design systems are never \"done\"\n5. **Celebrate wins** - Recognize team contributions\n\n## What We'd Do Differently\n\n- Involve developers earlier in the process\n- Create components iteratively instead of all at once\n- Establish governance and maintenance plan upfront\n- Allocate dedicated resources for ongoing management\n- Invest more in training\n\n## The Future\n\nWe're now expanding to:\n- Component development guidance\n- Animation library\n- Data visualization patterns\n- Mobile-specific guidelines\n\n## Conclusion\n\nBuilding a design system at scale is challenging but incredibly rewarding. The investment pays off through increased efficiency, better quality, and a happier team.",
+      "excerpt": "How we built a design system that 50+ designers actually use.",
+      "subtitle": "From chaos to consistency",
+      "readingTimeMinutes": 14,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": false,
+      "seoTitle": "Design System Case Study - Building at Scale",
+      "seoDescription": "Learn how we scaled design consistency across our entire organization.",
+      "tags": ["portfolio"]
+    },
+    {
+      "title": "Podcast Transcript: The Future of AI in Product Development",
+      "slug": "podcast-future-of-ai",
+      "format": "podcast",
+      "content": "## Episode: \"The Future of AI in Product Development\"\n\n**Guest**: Dr. Sarah Chen, AI Research Lead at TechCorp\n**Duration**: 60 minutes\n**Published**: January 15, 2025\n\n---\n\n**[00:00 - Intro]**\n\nHost: Welcome to Product Conversations. I'm your host, and today we're discussing AI's transformative impact on product development with Dr. Sarah Chen, AI Research Lead. Sarah, thanks for joining us.\n\nSarah: Thanks for having me! Excited to chat about this.\n\n**[04:32 - What's changing?]**\n\nHost: So what's fundamentally different about AI now compared to 2 years ago?\n\nSarah: \"We're moving from narrow AI to more general applications. Two years ago, AI was specialized tools for specific tasks. Now, AI can understand context, learn from feedback, and adapt across different domains. This means product teams can now automate tasks that previously required human expertise.\"\n\nHost: Give us an example.\n\nSarah: \"Customer support is a great one. We can now handle 70% of support tickets automatically while maintaining quality. The AI understands context, sentiment, and can escalate when needed.\"\n\n**[12:15 - Real use cases]**\n\nSarah: \"At our company, we use AI for:\n- Personalization at scale: Each user gets a customized experience\n- Predictive analytics: We know what users will do before they do it\n- Automated bug detection: Catching issues before users see them\n- User behavior analysis: Understanding why users behave certain ways\n- Content generation: Faster content creation for marketing\"\n\n**[28:40 - Challenges]**\n\nHost: What's the biggest challenge you see?\n\nSarah: \"The biggest challenge isn't the technology—it's the data. You need high-quality, well-structured data to make AI work. Garbage in, garbage out. Many companies underestimate this.\"\n\n**[45:23 - Future predictions]**\n\nSarah: \"By 2026, AI will be table stakes for competitive products. The question won't be 'should we use AI?' but 'how do we use AI responsibly?' Ethics, privacy, and bias will be the real differentiators.\"\n\n**[52:10 - Final thoughts]**\n\nSarah: \"My advice: start experimenting now. Don't wait for perfect conditions. Run small pilots, learn, iterate. The teams that move fastest will win.\"\n\nHost: Great advice. Before we go, any resources for our listeners?\n\nSarah: \"Check out AI for Product Managers book, join AI communities, and follow researchers on Twitter. Stay curious.\"\n\n---\n\n## Key Takeaways\n\n1. **AI adoption is accelerating** - From experimental to essential\n2. **Data quality matters most** - The foundation for everything\n3. **Ethics is becoming critical** - Not optional\n4. **Early movers have advantage** - Speed matters\n5. **Skills training is essential** - Your team needs to evolve\n\n## Resources Mentioned\n\n- AI for Product Managers book\n- Product AI community on Discord\n- Sarah Chen's Twitter: @sarahchen_ai\n- TechCorp's AI blog\n\n## Timestamps\n\n- 00:00 - Introduction\n- 04:32 - What's changing in AI?\n- 12:15 - Real use cases\n- 28:40 - Biggest challenges\n- 45:23 - Future predictions\n- 52:10 - Final advice\n- 60:00 - End",
+      "excerpt": "Deep dive conversation on AI's transformative impact on product teams.",
+      "subtitle": "60 minutes of insights",
+      "readingTimeMinutes": null,
+      "durationSeconds": "3600",
+      "youtubeUrl": null,
+      "externalUrl": "https://your-podcast-platform.com/episode/future-of-ai",
+      "isFeatured": true,
+      "seoTitle": "Podcast: The Future of AI in Product Development",
+      "seoDescription": "Listen to our conversation with AI experts about the future of product development.",
+      "tags": ["podcasts"]
+    },
+    {
+      "title": "Annual Conference 2025 - Photo Gallery & Highlights",
+      "slug": "event-photo-gallery-2025",
+      "format": "article",
+      "content": "# Annual Conference 2025 - Photo Gallery\n\n## Event Highlights\n\nThis year's conference brought together 500+ product leaders from 30+ countries for three days of learning, networking, and inspiration. Here are the highlights captured through our photo gallery.\n\n## Day 1: Opening Keynote\n\nCEO Sarah Mitchell opened the conference with insights on the state of the product industry and what's next. Key themes:\n- AI is transforming product development\n- User privacy is non-negotiable\n- Cross-functional collaboration is essential\n\n## Day 2: Breakout Sessions\n\nOver 20 concurrent sessions covered:\n\n### Morning Sessions\n- AI in product development (sold out)\n- Building design systems at scale\n- User research best practices\n- Data-driven decision making\n\n### Afternoon Sessions\n- Scaling teams without chaos\n- Product metrics that matter\n- International expansion strategies\n- Building for accessibility\n\n## Day 3: Networking & Workshops\n\nHands-on workshops and networking sessions helped attendees:\n- Build meaningful connections\n- Learn practical skills\n- Exchange ideas\n- Form study groups\n\n### Workshop Topics\n- AI tools for product teams\n- Rapid prototyping techniques\n- Running effective user interviews\n- Building persuasive roadmaps\n\n## Memorable Moments\n\n- Standing ovation for the product ethics panel\n- Packed hallway conversations about AI ethics\n- Sponsor innovation showcase with 30+ companies\n- Evening networking reception with live music\n- Surprise announcement of new product framework\n\n## Attendee Testimonials\n\n\"Best conference I've attended. Great mix of tactical content and strategic thinking.\" - Jane D., Product Director\n\n\"The design systems workshop was exactly what our team needed. Already implementing ideas.\" - Mike R., Head of Design\n\n\"Met amazing people and learned so much about the future of our industry.\" - Lisa T., Founder\n\n\"Great organization and curation. Every talk was valuable.\" - James M., VP Product\n\n## By the Numbers\n\n- **500+** product leaders\n- **30+** countries represented\n- **20+** breakout sessions\n- **8** keynote speakers\n- **1000+** conversations started\n- **5** new partnerships formed\n\n## Photo Categories Available\n\n1. Opening Keynote\n2. Breakout Sessions\n3. Workshop Moments\n4. Networking\n5. Sponsor Showcase\n6. Keynote Speakers\n7. Attendee Highlights\n8. Evening Reception\n\n## Save the Date\n\nJoin us again next year! Details coming soon.\n\n**Conference 2026**: June 15-17, 2026\n**Location**: San Francisco, CA\n**Early Bird Registration**: Opens March 2026",
+      "excerpt": "Beautiful high-resolution photos from our annual product conference.",
+      "subtitle": "500+ product leaders gathered",
+      "readingTimeMinutes": 5,
+      "durationSeconds": null,
+      "youtubeUrl": null,
+      "externalUrl": null,
+      "isFeatured": true,
+      "seoTitle": "Annual Conference 2025 - Event Photos",
+      "seoDescription": "View highlights and photos from our annual product leadership conference.",
+      "tags": ["media"]
+    }
+  ]
+}

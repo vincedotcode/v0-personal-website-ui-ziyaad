@@ -68,6 +68,9 @@
     "slug": {
       "type": "uid",
       "required": true
+    },
+    "excerpt": {
+      "type": "text"
     }
   }
 }
