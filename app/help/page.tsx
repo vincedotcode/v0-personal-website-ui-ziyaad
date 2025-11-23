@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
 import { getPostsByTag, StrapiPost, getMediaUrl } from "@/lib/strapi";
 
 export const dynamic = "force-dynamic";
