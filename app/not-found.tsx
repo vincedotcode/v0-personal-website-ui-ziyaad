@@ -6,11 +6,11 @@ import { Home, Search, ArrowLeft } from "lucide-react"
 
 export default function NotFound() {
   return (
-    <div className="relative min-h-[80vh] flex items-center">
+    <div className="relative min-h-[80vh] flex items-center justify-center">
       <SquaresBackground />
 
-      <div className="container">
-        <div className="mx-auto max-w-2xl">
+      <div className="container flex justify-center">
+        <div className="w-full max-w-2xl">
           <Card className="border-2">
             <CardHeader className="text-center space-y-4 pb-4">
               <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -40,7 +40,6 @@ export default function NotFound() {
                 </Button>
               </div>
 
-              {/* No onClick / window usage here */}
               <Button asChild variant="ghost" className="w-full">
                 <Link href="/">
                   <ArrowLeft className="mr-2 h-4 w-4" />
@@ -60,38 +59,7 @@ export default function NotFound() {
             </CardContent>
           </Card>
 
-          {/* Quick Links */}
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
-            <Link
-              href="/about"
-              className="group rounded-lg border border-border p-4 transition-all hover:border-primary/20 hover:shadow-md"
-            >
-              <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
-                About Me
-              </h3>
-              <p className="text-sm text-muted-foreground">Learn more about my background</p>
-            </Link>
-
-            <Link
-              href="/blog"
-              className="group rounded-lg border border-border p-4 transition-all hover:border-primary/20 hover:shadow-md"
-            >
-              <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
-                Blog
-              </h3>
-              <p className="text-sm text-muted-foreground">Read my latest articles</p>
-            </Link>
-
-            <Link
-              href="/touchbase"
-              className="group rounded-lg border border-border p-4 transition-all hover:border-primary/20 hover:shadow-md"
-            >
-              <h3 className="font-medium mb-1 group-hover:text-primary transition-colors">
-                Contact
-              </h3>
-              <p className="text-sm text-muted-foreground">Get in touch with me</p>
-            </Link>
-          </div>
+        
         </div>
       </div>
     </div>

@@ -158,3 +158,57 @@ export async function getPostBySlug(slug: string | undefined | null) {
 export async function getAllTags() {
   return strapiFetch<StrapiTag>(`/api/tags`);
 }
+
+// Top-level section tags that have their own directories in /app
+export const SECTION_TAG_SLUGS = [
+  "articles",
+  "books",
+  "cook",
+  "cookies",
+  "dataprotection",
+  "help",
+  "media",
+  "podcasts",
+  "portfolio",
+  "privacy",
+  "product",
+  "terms",
+  "touchbase",
+  "write",
+]
+
+// Utility: pick the first tag that maps to a top-level section
+export function getPrimarySectionTagSlug(post: StrapiPost): string | null {
+  if (!post.tags?.length) return null
+  const tag = post.tags.find((t) => SECTION_TAG_SLUGS.includes(t.slug))
+  return tag?.slug ?? null
+}
+
+/**
+ * Full-text-ish search across posts
+ * Searches title, excerpt, and content (case-insensitive)
+ * Populates tags + featuredImage so we can build correct URLs.
+ */
+export async function searchPosts(
+  query: string,
+  page = 1,
+  pageSize = 20,
+) {
+  const params = new URLSearchParams({
+    "pagination[page]": String(page),
+    "pagination[pageSize]": String(pageSize),
+    "sort[0]": "publishedAt:desc",
+    "populate[0]": "tags",
+    "populate[1]": "featuredImage",
+  })
+
+  const trimmed = query.trim()
+
+  if (trimmed) {
+    params.set("filters[$or][0][title][$containsi]", trimmed)
+    params.set("filters[$or][1][excerpt][$containsi]", trimmed)
+    params.set("filters[$or][2][content][$containsi]", trimmed)
+  }
+
+  return strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`)
+}

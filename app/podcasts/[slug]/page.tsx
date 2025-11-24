@@ -22,6 +22,46 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
+function getYouTubeEmbedUrl(rawUrl?: string | null) {
+  if (!rawUrl) return null;
+
+  try {
+    const url = new URL(rawUrl);
+
+    // youtu.be/<id>
+    if (url.hostname === "youtu.be") {
+      const id = url.pathname.slice(1);
+      if (id) return `https://www.youtube.com/embed/${id}`;
+    }
+
+    // youtube.com/* variants
+    if (url.hostname.endsWith("youtube.com")) {
+      // Standard watch URL
+      const v = url.searchParams.get("v");
+      if (v) return `https://www.youtube.com/embed/${v}`;
+
+      // Already embed
+      if (url.pathname.startsWith("/embed/")) {
+        return rawUrl;
+      }
+
+      // Shorts → map to embed
+      if (url.pathname.startsWith("/shorts/")) {
+        const parts = url.pathname.split("/");
+        const id = parts[2];
+        if (id) return `https://www.youtube.com/embed/${id}`;
+      }
+    }
+
+    // Fallback: just use whatever was provided
+    return rawUrl;
+  } catch {
+    return null;
+  }
+}
+
+
+
 function formatDate(dateString: string) {
   return new Date(dateString).toLocaleDateString("en-GB", {
     day: "2-digit",
@@ -33,41 +73,61 @@ function formatDate(dateString: string) {
 function PodcastHeader({ post }: { post: StrapiPost }) {
   const mediaUrl = getMediaUrl(post.featuredImage);
   const duration = post.durationSeconds ? Math.round(parseInt(post.durationSeconds) / 60) : 0;
+  const youtubeEmbedUrl = getYouTubeEmbedUrl(post.youtubeUrl);
 
   return (
     <header className="space-y-10 mb-16">
-      <Link href="/podcasts" className="inline-flex items-center gap-2 text-sm font-semibold text-white/50 hover:text-white transition-colors group">
+      <Link
+        href="/podcasts"
+        className="inline-flex items-center gap-2 text-sm font-semibold text-white/50 hover:text-white transition-colors group"
+      >
         <span className="group-hover:-translate-x-1 transition-transform">←</span>
         Back to All Episodes
       </Link>
 
       <div className="grid lg:grid-cols-[1.3fr,1fr] gap-12 items-start">
-        {/* Album Art with Player */}
-        {mediaUrl && (
-          <div className="relative group">
-            <div className="absolute -inset-6 bg-gradient-to-br from-violet-600/30 via-pink-600/30 to-violet-600/30 rounded-3xl blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl group-hover:border-white/20 transition-all">
-              <Image
-                src={mediaUrl}
-                alt={post.featuredImage?.alternativeText || post.title}
-                width={600}
-                height={600}
-                className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                priority
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              
-              {/* Large Play Button */}
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center shadow-2xl hover:scale-110 transition-transform cursor-pointer">
-                  <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
+        {/* Video (preferred) or Album Art */}
+        <div className="relative group">
+          <div className="absolute -inset-6 bg-gradient-to-br from-violet-600/30 via-pink-600/30 to-violet-600/30 rounded-3xl blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+          {youtubeEmbedUrl ? (
+            // YouTube player
+            <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl bg-black">
+              <div className="relative w-full pt-[56.25%]">
+                <iframe
+                  src={youtubeEmbedUrl}
+                  title={post.title}
+                  className="absolute inset-0 w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
               </div>
             </div>
-          </div>
-        )}
+          ) : (
+            // Fallback: static image with big play button
+            mediaUrl && (
+              <div className="relative overflow-hidden rounded-3xl border border-white/10 shadow-2xl group-hover:border-white/20 transition-all">
+                <Image
+                  src={mediaUrl}
+                  alt={post.featuredImage?.alternativeText || post.title}
+                  width={600}
+                  height={600}
+                  className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center shadow-2xl hover:scale-110 transition-transform cursor-pointer">
+                    <svg className="w-10 h-10 text-white ml-1" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            )
+          )}
+        </div>
 
         {/* Episode Details */}
         <div className="space-y-8 flex flex-col justify-between h-full">
@@ -116,21 +176,7 @@ function PodcastHeader({ post }: { post: StrapiPost }) {
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex flex-col gap-3 pt-4">
-            <button className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white font-bold transition-all duration-300 flex items-center justify-center gap-3 shadow-lg hover:shadow-2xl hover:scale-105 group">
-              <svg className="w-6 h-6 group-hover:scale-125 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M8 5v14l11-7z" />
-              </svg>
-              Play Episode
-            </button>
-            <button className="w-full py-3 rounded-xl border border-white/20 bg-white/5 hover:bg-white/10 text-white font-semibold transition-all flex items-center justify-center gap-2">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-              </svg>
-              Download
-            </button>
-          </div>
+         
         </div>
       </div>
     </header>
@@ -305,12 +351,6 @@ export default async function PodcastPage({ params }: PageProps) {
               <TranscriptSection />
             </article>
           )}
-
-          {/* Guest Section - You can customize this with actual guest data */}
-          <div className="mt-16 space-y-6 pt-12 border-t border-white/10">
-            <h3 className="text-2xl font-black text-white">Guest</h3>
-            <GuestCard name="Guest Name" role="Your Guest's Title/Role" />
-          </div>
 
           <SubscribeBox />
         </div>

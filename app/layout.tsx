@@ -7,6 +7,7 @@ import { CookieConsent } from "@/components/cookie-consent"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AnalyticsProvider } from "@/components/analytics-provider"
 import "./globals.css"
+import { NewsletterPopup } from "@/components/newsletter-popup"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -112,19 +113,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID
+  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${_geist.className} antialiased`}>
         <ThemeProvider defaultTheme="dark" storageKey="zi-portfolio-theme">
+        <NewsletterPopup mode="always" /> {/* or "always" */}
           <SiteHeader />
           <main className="min-h-screen">{children}</main>
           <SiteFooter />
           <CookieConsent />
         </ThemeProvider>
 
-        <AnalyticsProvider gaId={gaId} />
+        <AnalyticsProvider gaId={GA_ID} />
         <Analytics />
       </body>
     </html>
