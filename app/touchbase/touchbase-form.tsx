@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Mail, Linkedin, Twitter } from "lucide-react"
+import { trackEvent } from "@/lib/analytics"
 
 // ---------- Types & constants ----------
 
@@ -87,16 +88,6 @@ const sqlPatterns = [
   /(--|\/\*|\*\/)/g,
   /('|")(\s*)(OR|AND)(\s*)/gi,
 ]
-
-// ---------- Analytics helper ----------
-
-function trackEvent(event: string, params?: Record<string, any>) {
-  if (typeof window === "undefined") return
-  const w = window as any
-  if (typeof w.gtag === "function") {
-    w.gtag("event", event, params ?? {})
-  }
-}
 
 // ---------- Page component ----------
 

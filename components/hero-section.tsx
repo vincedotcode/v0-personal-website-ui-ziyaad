@@ -9,9 +9,15 @@ import { LayoutTextFlip } from "@/components/ui/layout-text-flip"
 import { RippleGridBackground } from "@/components/reactbits-background"
 import Orb from "@/components/ui/orb"
 import ProfileCard from "@/components/profile-card"
+import { trackEvent } from "@/lib/analytics"
 
 export function HeroSection() {
     const router = useRouter()
+    const logCta = (action: string) =>
+        trackEvent("hero_cta_click", {
+            event_category: "engagement",
+            event_label: action,
+        })
 
     return (
         <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden">
@@ -92,20 +98,28 @@ export function HeroSection() {
                         {/* CTAs */}
                         <div className="flex flex-wrap items-center gap-3 pt-4">
                             <ParticleButton size="lg" asChild>
-                                <Link href="/touchbase">
+                                <Link
+                                    href="/touchbase"
+                                    onClick={() => logCta("touchbase_primary")}
+                                >
                                     Book a conversation
                                     <ArrowRight className="ml-2 h-4 w-4" />
                                 </Link>
                             </ParticleButton>
 
                             <ParticleButton size="lg" variant="outline" asChild>
-                                <Link href="/assets/ziyaad-ben-eydatoula-cv.pdf" target="_blank">
+                                <Link
+                                    href="/assets/ziyaad-ben-eydatoula-cv.pdf"
+                                    target="_blank"
+                                    onClick={() => logCta("cv_download_hero")}
+                                >
                                     Download C.V.
                                 </Link>
                             </ParticleButton>
 
                             <Link
                                 href="/portfolio"
+                                onClick={() => logCta("portfolio_link")}
                                 className="text-sm text-muted-foreground underline-offset-4 hover:underline"
                             >
                                 View portfolio
@@ -135,7 +149,10 @@ export function HeroSection() {
                             showUserInfo={true}
                             enableTilt={true}
                             enableMobileTilt={false}
-                            onContactClick={() => router.push("/touchbase")}
+                            onContactClick={() => {
+                                logCta("profile_contact_button")
+                                router.push("/touchbase")
+                            }}
                         />
                     </div>
                 </div>

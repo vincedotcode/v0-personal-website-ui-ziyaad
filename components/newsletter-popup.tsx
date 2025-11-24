@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { trackEvent } from "@/lib/analytics"
 import {
   Dialog,
   DialogContent,
@@ -13,6 +14,12 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 
 type NewsletterPopupMode = "once" | "always"
+type NewsletterCloseReason =
+  | "user_dismiss"
+  | "submit_success"
+  | "submit_error"
+  | "auto_hide"
+  | "programmatic"
 
 type NewsletterPopupProps = {
   /**
@@ -37,25 +44,48 @@ export function NewsletterPopup({
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const [hasInteracted, setHasInteracted] = useState(false)
+  const [closeReason, setCloseReason] =
+    useState<NewsletterCloseReason | null>(null)
+  const openTimestampRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (typeof window === "undefined") return
 
-    if (mode === "always") {
-      const timer = setTimeout(() => setOpen(true), delayMs)
-      return () => clearTimeout(timer)
+    // If we've already shown it once, log suppression and bail
+    const hasSeen = window.localStorage.getItem(STORAGE_KEY)
+    if (mode === "once" && hasSeen) {
+      trackEvent("newsletter_popup_suppressed", {
+        event_category: "newsletter",
+        event_label: "already_seen",
+        mode,
+      })
+      return
     }
 
-    // mode === "once"
-    const hasSeen = window.localStorage.getItem(STORAGE_KEY)
-    if (!hasSeen) {
-      const timer = setTimeout(() => setOpen(true), delayMs)
-      return () => clearTimeout(timer)
-    }
+    const timer = setTimeout(() => {
+      setOpen(true)
+      trackEvent("newsletter_popup_triggered", {
+        event_category: "newsletter",
+        event_label: mode,
+        delay_ms: delayMs,
+      })
+    }, delayMs)
+
+    return () => clearTimeout(timer)
   }, [mode, delayMs])
 
-  const handleClose = (nextOpen: boolean) => {
+  const handleClose = (
+    nextOpen: boolean,
+    reason: NewsletterCloseReason = "user_dismiss"
+  ) => {
+    // Capture close reason for analytics when we transition from open -> closed
+    if (!nextOpen && open) {
+      setCloseReason(reason)
+    }
+
     setOpen(nextOpen)
+
     if (!nextOpen && typeof window !== "undefined" && mode === "once") {
       window.localStorage.setItem(STORAGE_KEY, "1")
     }
@@ -66,6 +96,11 @@ export function NewsletterPopup({
     setLoading(true)
     setError(null)
     setSuccess(null)
+    trackEvent("newsletter_submit_attempt", {
+      event_category: "newsletter",
+      event_label: "popup",
+      has_email: Boolean(email),
+    })
 
     try {
       const res = await fetch("/api/subscribe", {
@@ -77,24 +112,85 @@ export function NewsletterPopup({
       const data = await res.json()
 
       if (!res.ok) {
+        const errorReason = data?.error ? "backend_error" : "unknown_error"
         setError(data.error || "Something went wrong. Please try again.")
+        trackEvent("newsletter_submit_error", {
+          event_category: "newsletter",
+          event_label: "popup",
+          status: res.status,
+          error_reason: errorReason,
+        })
+        setCloseReason("submit_error")
         return
       }
 
       setSuccess("You’re in. Check your inbox.")
       setEmail("")
+      trackEvent("newsletter_submit_success", {
+        event_category: "newsletter",
+        event_label: "popup",
+      })
 
       // Mark as seen + close after a short delay
       if (typeof window !== "undefined" && mode === "once") {
         window.localStorage.setItem(STORAGE_KEY, "1")
       }
-      setTimeout(() => setOpen(false), 800)
+      setTimeout(() => handleClose(false, "submit_success"), 800)
     } catch (err) {
       console.error(err)
       setError("Network error. Please try again.")
+      trackEvent("newsletter_submit_error", {
+        event_category: "newsletter",
+        event_label: "popup",
+        error_reason: "network_error",
+      })
     } finally {
       setLoading(false)
     }
+  }
+
+  // Log open + close with dwell time
+  useEffect(() => {
+    if (open) {
+      openTimestampRef.current = performance.now()
+      trackEvent("newsletter_popup_open", {
+        event_category: "newsletter",
+        event_label: mode,
+      })
+      return
+    }
+
+    if (openTimestampRef.current !== null) {
+      const dwell = Math.round(performance.now() - openTimestampRef.current)
+      trackEvent("newsletter_popup_close", {
+        event_category: "newsletter",
+        event_label: closeReason ?? "programmatic",
+        dwell_ms: dwell,
+      })
+      openTimestampRef.current = null
+      setCloseReason(null)
+    }
+  }, [open, closeReason, mode])
+
+  const handleEmailFocus = () => {
+    if (!hasInteracted) {
+      setHasInteracted(true)
+      trackEvent("newsletter_email_focus", {
+        event_category: "newsletter",
+        event_label: mode,
+      })
+    }
+  }
+
+  const handleEmailChange = (value: string) => {
+    if (!hasInteracted) {
+      setHasInteracted(true)
+      trackEvent("newsletter_typing_started", {
+        event_category: "newsletter",
+        event_label: mode,
+      })
+    }
+    setEmail(value)
   }
 
   return (
@@ -135,7 +231,8 @@ export function NewsletterPopup({
                     required
                     autoComplete="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={handleEmailFocus}
+                    onChange={(e) => handleEmailChange(e.target.value)}
                     placeholder="you@company.com"
                     className="flex-1 text-sm"
                   />

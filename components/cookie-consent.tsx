@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { trackEvent } from "@/lib/analytics"
 
 function getCookie(name: string): string | null {
   if (typeof document === "undefined") return null
@@ -25,12 +26,20 @@ export function CookieConsent() {
     const consent = getCookie("analytics_consent")
     if (!consent) {
       setVisible(true)
+      trackEvent("cookie_banner_impression", {
+        event_category: "consent",
+        event_label: "analytics",
+      })
     }
     setDecisionLoaded(true)
   }, [])
 
   const handleChoice = (allowAnalytics: boolean) => {
     setCookie("analytics_consent", allowAnalytics ? "true" : "false", 365)
+    trackEvent("cookie_banner_choice", {
+      event_category: "consent",
+      event_label: allowAnalytics ? "accept" : "decline",
+    })
     setVisible(false)
     // Reload so AnalyticsProvider can pick up the new cookie and (if allowed) init GA
     if (typeof window !== "undefined") {

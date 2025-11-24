@@ -3,8 +3,15 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { ParticleButton } from "@/components/particle-button"
+import { trackEvent } from "@/lib/analytics"
 
 export function FinalCtaSection() {
+  const logCta = (label: string) =>
+    trackEvent("final_cta_click", {
+      event_category: "engagement",
+      event_label: label,
+    })
+
   return (
     <section
       className="relative overflow-hidden py-24 px-4 md:px-6 lg:px-8
@@ -29,14 +36,21 @@ export function FinalCtaSection() {
 
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <ParticleButton size="lg" asChild>
-              <Link href="/touchbase">
+              <Link
+                href="/touchbase"
+                onClick={() => logCta("touchbase_footer")}
+              >
                 Touch Base
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </ParticleButton>
 
             <ParticleButton size="lg" variant="outline" asChild>
-              <Link href="/assets/ziyaad-ben-eydatoula-cv.pdf" target="_blank">
+              <Link
+                href="/assets/ziyaad-ben-eydatoula-cv.pdf"
+                target="_blank"
+                onClick={() => logCta("cv_download_footer")}
+              >
                 Download C.V.
               </Link>
             </ParticleButton>

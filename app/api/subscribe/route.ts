@@ -71,14 +71,26 @@ export async function POST(req: NextRequest) {
     const subscriber = result[0];
 
     // Send Welcome Email
-    await resend.emails.send({
-      from:
-        process.env.NEWSLETTER_FROM_EMAIL ||
-        "Zi Newsletter <no-reply@ziyaadbeneydatoula.com>",
-      to: email,
-      subject: "Welcome to Zi’s Newsletter",
-      html: welcomeEmailHtml(email, subscriber.unsubscribe_token),
-    });
+// Send Welcome Email
+try {
+  const resendResult = await resend.emails.send({
+    from:
+      process.env.NEWSLETTER_FROM_EMAIL ||
+      "Zi Newsletter <no-reply@ziyaadbeneydatoula.com>",
+    to: email,
+    subject: "Welcome to Zi’s Newsletter",
+    html: welcomeEmailHtml(email, subscriber.unsubscribe_token),
+  });
+
+  console.log("Resend welcome email result:", resendResult);
+} catch (err) {
+  console.error("Resend welcome email error:", err);
+  return NextResponse.json(
+    { error: "Failed to send welcome email." },
+    { status: 500 }
+  );
+}
+
 
     return NextResponse.json({ success: true });
   } catch (e) {
