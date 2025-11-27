@@ -192,6 +192,36 @@ export async function getAllTags() {
   });
 }
 
+/**
+ * Fetch all posts (paginated) with tags + featured image populated.
+ * Used by the search page to hydrate once and filter client-side.
+ */
+export async function getAllPosts(pageSize = 100) {
+  const all: StrapiPost[] = [];
+  let page = 1;
+  let pageCount = 1;
+
+  do {
+    const params = new URLSearchParams({
+      "pagination[page]": String(page),
+      "pagination[pageSize]": String(pageSize),
+      "sort[0]": "publishedAt:desc",
+      "populate[0]": "tags",
+      "populate[1]": "featuredImage",
+    });
+
+    const res = await strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`, {
+      cacheTags: [STRAPI_CACHE_TAGS.posts],
+    });
+
+    all.push(...res.data);
+    pageCount = res.meta.pagination.pageCount;
+    page += 1;
+  } while (page <= pageCount);
+
+  return all;
+}
+
 // Top-level section tags that have their own directories in /app
 export const SECTION_TAG_SLUGS = [
   "articles",

@@ -19,7 +19,7 @@ export default function UnsubscribePage() {
 
     (async () => {
       try {
-        const res = await fetch("/api/newsletter/unsubscribe", {
+        const res = await fetch("/api/unsubscribe", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ token }),

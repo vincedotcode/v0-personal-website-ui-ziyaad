@@ -2,7 +2,7 @@ const APP_URL =
   process.env.NEXT_PUBLIC_APP_URL || "https://ziyaadbeneydatoula.com";
 
 export function welcomeEmailHtml(email: string, token: string) {
-  const unsubscribeUrl = `${APP_URL}/api/unsubscribe?token=${token}`;
+  const unsubscribeUrl = `${APP_URL}/unsubscribe?token=${token}`;
 
   return `
     <h1>Welcome to Zi’s Newsletter 👋</h1>
@@ -13,7 +13,7 @@ export function welcomeEmailHtml(email: string, token: string) {
 }
 
 export function newsletterEmailHtml(contentHtml: string, token: string) {
-  const unsubscribeUrl = `${APP_URL}/api/unsubscribe?token=${token}`;
+  const unsubscribeUrl = `${APP_URL}/unsubscribe?token=${token}`;
 
   return `
     ${contentHtml}

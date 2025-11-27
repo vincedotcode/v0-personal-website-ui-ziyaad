@@ -73,7 +73,7 @@ export default function ZiAdminPage() {
   const [resumeUrl, setResumeUrl] = useState("");
   const [resumeMessage, setResumeMessage] = useState<string | null>(null);
 
-  // Load token from localStorage
+  // Load token from localStorage and eagerly hydrate data
   useEffect(() => {
     if (typeof window === "undefined") return;
     const stored = window.localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY);
@@ -82,6 +82,15 @@ export default function ZiAdminPage() {
       setTokenInput(stored);
     }
   }, []);
+
+  // When token is present, load all dashboard data once
+  useEffect(() => {
+    if (!adminToken) return;
+    fetchSummary();
+    fetchSubscribers();
+    fetchCampaigns();
+    fetchResumeResources();
+  }, [adminToken]);
 
   const handleLogin = () => {
     if (!tokenInput.trim()) {
@@ -397,19 +406,11 @@ export default function ZiAdminPage() {
 
       <Tabs defaultValue="overview">
         <TabsList>
-          <TabsTrigger value="overview" onClick={fetchSummary}>
-            Overview
-          </TabsTrigger>
-          <TabsTrigger value="subscribers" onClick={fetchSubscribers}>
-            Subscribers
-          </TabsTrigger>
-          <TabsTrigger value="campaigns" onClick={fetchCampaigns}>
-            Campaigns
-          </TabsTrigger>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
+          <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
           <TabsTrigger value="new">New Campaign</TabsTrigger>
-          <TabsTrigger value="resume" onClick={fetchResumeResources}>
-            Resume
-          </TabsTrigger>
+          <TabsTrigger value="resume">Resume</TabsTrigger>
         </TabsList>
 
         {/* Overview tab */}

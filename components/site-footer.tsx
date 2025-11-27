@@ -71,14 +71,7 @@ export function SiteFooter() {
                   Articles
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/templates"
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Templates
-                </Link>
-              </li>
+              
             </ul>
           </div>
 

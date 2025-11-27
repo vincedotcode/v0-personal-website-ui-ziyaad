@@ -48,6 +48,7 @@ export function NewsletterPopup({
   const [closeReason, setCloseReason] =
     useState<NewsletterCloseReason | null>(null)
   const openTimestampRef = useRef<number | null>(null)
+  const initialRenderRef = useRef(true)
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -74,6 +75,20 @@ export function NewsletterPopup({
 
     return () => clearTimeout(timer)
   }, [mode, delayMs])
+
+  // Listen for global open requests (e.g., from podcast page CTA)
+  useEffect(() => {
+    if (typeof window === "undefined") return
+    const handler = (e: Event) => {
+      setOpen(true)
+      // Ensure we count this as user-triggered so localStorage still respects once-mode
+      if (mode === "once" && typeof window !== "undefined") {
+        window.localStorage.setItem(STORAGE_KEY, "1")
+      }
+    }
+    window.addEventListener("open-newsletter-popup", handler)
+    return () => window.removeEventListener("open-newsletter-popup", handler)
+  }, [mode])
 
   const handleClose = (
     nextOpen: boolean,

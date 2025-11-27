@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { OpenNewsletterButton } from "@/components/open-newsletter-button";
 import { getPostsByTag, StrapiPost, getMediaUrl } from "@/lib/strapi";
 
 
@@ -70,12 +71,12 @@ function PodcastsHero() {
           </div>
 
           <div className="flex flex-wrap items-center gap-4 pt-4">
-            <button className="px-6 py-3 rounded-full bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white font-semibold shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center gap-2">
+            <OpenNewsletterButton className="px-6 py-3 rounded-full bg-gradient-to-r from-violet-500 to-pink-500 hover:from-violet-600 hover:to-pink-600 text-white font-semibold shadow-lg hover:shadow-2xl transition-all duration-300 flex items-center gap-2">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M8 5v14l11-7z" />
               </svg>
               Subscribe Now
-            </button>
+            </OpenNewsletterButton>
             <div className="flex items-center gap-3 px-4 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-sm">
               <span className="h-3 w-3 rounded-full bg-green-400 " />
               <span className="text-sm text-white/70">New episodes weekly</span>

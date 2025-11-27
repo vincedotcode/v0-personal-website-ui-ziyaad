@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react"
 import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { RippleGridBackground } from "@/components/reactbits-background"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -71,6 +72,13 @@ interface FieldErrors {
 }
 
 type SuccessVariant = "meeting" | "no-meeting" | null
+const ENQUIRY_TEMPLATES: Record<EnquiryTypeValue, string> = {
+  critique: "I'm interested in a product critique. ",
+  building: "I'm interested in help with product building. ",
+  gtm: "I'm interested in GTM strategy help. ",
+  coaching: "I'm interested in coaching for my product team. ",
+  other: "",
+}
 
 // XSS / SQL patterns (must match what you use on the backend)
 const xssPatterns = [
@@ -92,6 +100,7 @@ const sqlPatterns = [
 // ---------- Page component ----------
 
 export function TouchBaseForm() {
+  const searchParams = useSearchParams()
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -107,6 +116,7 @@ export function TouchBaseForm() {
   const [calendlyVisible, setCalendlyVisible] = useState(false)
   const [calendlyBooked, setCalendlyBooked] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
+  const [preAppliedQuery, setPreAppliedQuery] = useState(false)
 
   const messageLength = form.message.length
 
@@ -145,6 +155,24 @@ export function TouchBaseForm() {
     const timer = setTimeout(() => setSuccessVariant(null), 10000)
     return () => clearTimeout(timer)
   }, [successVariant])
+
+  // Apply prefilled enquiry/message from URL once
+  useEffect(() => {
+    if (preAppliedQuery) return
+    const enquiry = (searchParams.get("enquiry") || "").toLowerCase()
+    const match = ENQUIRY_OPTIONS.find((opt) => opt.value === enquiry)
+    if (match) {
+      setForm((prev) => ({
+        ...prev,
+        enquiryType: match.value,
+        message:
+          prev.message || ENQUIRY_TEMPLATES[match.value] + " My Message - ",
+      }))
+      setPreAppliedQuery(true)
+    } else {
+      setPreAppliedQuery(true)
+    }
+  }, [preAppliedQuery, searchParams])
 
   const validate = (): boolean => {
     const newErrors: FieldErrors = {}
@@ -605,7 +633,7 @@ export function TouchBaseForm() {
                   </div>
                 </div>
 
-                {/* Calendly (progressive disclosure, fixed height) */}
+                {/* Calendly (progressive disclosure, responsive) */}
                 <div
                   className={`transition-all duration-300 ${
                     calendlyVisible
@@ -614,17 +642,27 @@ export function TouchBaseForm() {
                   }`}
                 >
                   {calendlyVisible && (
-                    <div className="space-y-3 rounded-lg border bg-muted/40 p-4">
+                    <div className="space-y-3 rounded-lg border bg-muted/40 p-3 sm:p-4 -mx-3 sm:mx-0">
                       <p className="text-sm text-muted-foreground">
                         Great! Select a time that works for you below. You&apos;ll
                         receive a calendar invite and Google Meet link immediately
                         after booking.
                       </p>
-                      <div
-                        className="calendly-inline-widget w-full"
-                        data-url="https://calendly.com/ziyaad-b-eydatoula/30min"
-                        style={{ minWidth: "320px", height: "640px" }}
-                      />
+                      <div className="relative w-full max-w-full overflow-hidden">
+                        {/* Aspect-ratio box to keep iframe responsive */}
+                        <div className="absolute inset-0">
+                          <div
+                            className="calendly-inline-widget w-full h-full rounded-md overflow-hidden"
+                            data-url="https://calendly.com/ziyaad-b-eydatoula/30min"
+                            style={{
+                              minWidth: "0",
+                              width: "100%",
+                              height: "100%",
+                            }}
+                          />
+                        </div>
+                        <div className="invisible pt-[150%] sm:pt-[120%] lg:pt-[90%]" />
+                      </div>
                       {/* Calendly script */}
                       <script
                         type="text/javascript"

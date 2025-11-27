@@ -45,7 +45,7 @@ function HelpHero() {
         </p>
       </div>
 
-      <div className="relative mt-12 grid grid-cols-3 gap-4">
+      <div className="relative mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div className="rounded-lg bg-white/5 border border-white/10 p-5 backdrop-blur-sm hover:border-cyan-500/30 transition-all group cursor-pointer">
           <div className="text-cyan-400 text-2xl font-bold group-hover:scale-110 transition-transform">📚</div>
           <p className="text-xs text-white/50 mt-3 uppercase tracking-wider">Guides</p>
