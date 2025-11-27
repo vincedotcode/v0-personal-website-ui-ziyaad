@@ -1,7 +1,7 @@
 // app/search/search-shell.tsx
 "use client";
 
-import { useCallback,useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import Link from "next/link";
 import type { StrapiPost, StrapiTag } from "@/lib/strapi";
 import { getPrimarySectionTagSlug } from "@/lib/strapi";
@@ -14,6 +14,14 @@ type Props = {
 
 type SearchResponse = {
   data: StrapiPost[];
+  meta: {
+    pagination: {
+      page: number;
+      pageSize: number;
+      pageCount: number;
+      total: number;
+    };
+  };
 };
 
 function buildPostHref(post: StrapiPost): string {
@@ -23,73 +31,35 @@ function buildPostHref(post: StrapiPost): string {
 }
 
 export default function SearchShell({ tags }: Props) {
-  const [allPosts, setAllPosts] = useState<StrapiPost[] | null>(null);
-  const [initialLoading, setInitialLoading] = useState(true);
   const [query, setQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [results, setResults] = useState<StrapiPost[] | null>(null);
+  const [meta, setMeta] = useState<SearchResponse["meta"] | null>(null);
   const [loading, setLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const filtersEnabled = hasSearched && Boolean(results);
 
-  // Hydrate all posts once
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const res = await fetch("/api/search-posts");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data: SearchResponse = await res.json();
-        if (mounted) {
-          setAllPosts(data.data);
-        }
-      } catch (err) {
-        console.error("[SearchShell] initial load error", err);
-        if (mounted) {
-          setError("Unable to load search index. Please try again.");
-        }
-      } finally {
-        if (mounted) setInitialLoading(false);
-      }
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
   const runSearch = useCallback(
-    async (overrideTag?: string | null) => {
+    async (overrideTag?: string | null, page = 1) => {
       const q = query.trim().toLowerCase();
       const tagToUse = overrideTag ?? selectedTag;
-      if (!allPosts || initialLoading) {
-        setError("Still loading posts. Please try again in a moment.");
-        return;
-      }
 
       setLoading(true);
       setError(null);
 
       try {
-        const filtered = allPosts.filter((post) => {
-          const matchesTag =
-            !tagToUse ||
-            post.tags?.some((t) => t.slug === tagToUse);
+        const params = new URLSearchParams();
+        if (q) params.set("q", q);
+        if (tagToUse) params.set("tag", tagToUse);
+        params.set("page", String(page));
 
-          const searchTarget = [
-            post.title,
-            post.excerpt,
-            post.content,
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase();
+        const res = await fetch(`/api/search-posts?${params.toString()}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data: SearchResponse = await res.json();
 
-          const matchesQuery = q ? searchTarget.includes(q) : true;
-          return matchesTag && matchesQuery;
-        });
-
-        setResults(filtered);
+        setResults(data.data);
+        setMeta(data.meta);
         setHasSearched(true);
       } catch (err) {
         console.error("[SearchShell] search error", err);
@@ -99,20 +69,23 @@ export default function SearchShell({ tags }: Props) {
         setHasSearched(true);
       }
     },
-    [query, selectedTag, allPosts, initialLoading],
+    [query, selectedTag],
   );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await runSearch(1);
+    await runSearch(undefined, 1);
   };
 
   const handleTagClick = async (slug: string | null) => {
     if (!filtersEnabled) return;
     setSelectedTag(slug);
     // keep current query, re-run with explicit tag to avoid stale state
-    await runSearch(slug);
+    await runSearch(slug, 1);
   };
+
+  const currentPage = meta?.pagination.page ?? 1;
+  const pageCount = meta?.pagination.pageCount ?? 1;
 
   return (
     <div className="space-y-8">
@@ -140,18 +113,13 @@ export default function SearchShell({ tags }: Props) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by title, topic, or idea..."
           className="flex-1"
-          disabled={initialLoading}
         />
         <Button
           type="submit"
           className="sm:w-auto w-full"
-          disabled={loading || initialLoading}
+          disabled={loading}
         >
-          {initialLoading
-            ? "Loading posts..."
-            : loading
-            ? "Searching..."
-            : "Search"}
+          {loading ? "Searching..." : "Search"}
         </Button>
       </form>
 
@@ -204,14 +172,10 @@ export default function SearchShell({ tags }: Props) {
 
       {/* Results / loader / empty states */}
       <div className="space-y-4 min-h-[120px]">
-        {(loading || initialLoading) && (
+        {loading && (
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <div className="h-4 w-4 animate-spin rounded-full border border-primary border-t-transparent" />
-            <span>
-              {initialLoading
-                ? "Loading the library…"
-                : "Pulling results from the archive…"}
-            </span>
+            <span>Pulling results from the archive…</span>
           </div>
         )}
 
@@ -221,7 +185,7 @@ export default function SearchShell({ tags }: Props) {
           </p>
         )}
 
-        {!loading && !initialLoading && hasSearched && results && (
+        {!loading && hasSearched && results && (
           <>
             <p className="text-xs text-muted-foreground">
               Showing {results.length} result
@@ -294,10 +258,38 @@ export default function SearchShell({ tags }: Props) {
               </ul>
             )}
 
+            {pageCount > 1 && (
+              <div className="flex items-center justify-between pt-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage <= 1 || loading}
+                  onClick={() => runSearch(selectedTag, currentPage - 1)}
+                >
+                  Previous
+                </Button
+                >
+                <p className="text-xs text-muted-foreground">
+                  Page {currentPage} of {pageCount}
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage >= pageCount || loading}
+                  onClick={() => runSearch(selectedTag, currentPage + 1)}
+                >
+                  Next
+                </Button
+                >
+              </div>
+            )}
+
           </>
         )}
 
-        {!loading && !initialLoading && !hasSearched && (
+        {!loading && !hasSearched && (
           <p className="text-xs text-muted-foreground">
             Start typing a query or pick a topic to see everything that lives
             here.
