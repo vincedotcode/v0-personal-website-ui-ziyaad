@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Menu, X, Search } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { trackEvent } from "@/lib/analytics" // <- add this import
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -32,11 +33,19 @@ export function SiteHeader() {
     setSubscribeMessage(null)
     setSubscribeError(null)
 
-    const trimmed = subscribeEmail.trim()
-    if (!isValidEmail(trimmed)) {
+    const email = subscribeEmail.trim()
+
+    if (!isValidEmail(email)) {
       setSubscribeError("Please enter a valid email address.")
       return
     }
+
+    // Analytics: attempt
+    trackEvent?.("newsletter_submit_attempt", {
+      event_category: "newsletter",
+      event_label: "header",
+      has_email: Boolean(email),
+    })
 
     try {
       setSubscribeLoading(true)
@@ -44,33 +53,63 @@ export function SiteHeader() {
       const res = await fetch("/api/subscribe", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({ email }),
       })
 
       const data = await res.json().catch(() => ({}))
 
       if (!res.ok) {
-        setSubscribeError(
-          data?.error ?? "Something went wrong. Please try again.",
-        )
-      } else {
-        setSubscribeMessage("Subscribed successfully.")
-        setSubscribeEmail("")
+        const errorReason = data?.error ? "backend_error" : "unknown_error"
+        const msg =
+          data?.error || "Something went wrong. Please try again."
+
+        setSubscribeError(msg)
+
+        trackEvent?.("newsletter_submit_error", {
+          event_category: "newsletter",
+          event_label: "header",
+          status: res.status,
+          error_reason: errorReason,
+        })
+
+        return
       }
-    } catch {
+
+      // Success
+      setSubscribeMessage("You’re in. Check your inbox.")
+      setSubscribeEmail("")
+
+      trackEvent?.("newsletter_submit_success", {
+        event_category: "newsletter",
+        event_label: "header",
+      })
+    } catch (err) {
+      console.error(err)
       setSubscribeError("Network error. Please try again.")
+
+      trackEvent?.("newsletter_submit_error", {
+        event_category: "newsletter",
+        event_label: "header",
+        error_reason: "network_error",
+      })
     } finally {
       setSubscribeLoading(false)
     }
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header
+      className="
+        sticky top-0 z-50 w-full
+        border-b border-border/40
+        bg-background
+        shadow-sm
+      "
+    >
       <div className="container flex h-16 items-center justify-between px-4 md:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <div className="relative h-10 w-10">
-            {/* Light mode logo */}
             <Image
               src="/images/Logo_BW.png"
               alt="Zi Logo"
@@ -78,7 +117,6 @@ export function SiteHeader() {
               height={60}
               className="block dark:hidden"
             />
-            {/* Dark mode logo (if you have a variant, swap the src) */}
             <Image
               src="/images/Logo_BW.png"
               alt="Zi Logo"
@@ -228,7 +266,16 @@ export function SiteHeader() {
 
       {/* Mobile menu */}
       {mobileMenuOpen && (
-        <div className="border-t lg:hidden">
+        <div
+          className="
+            lg:hidden
+            fixed inset-x-0 top-16 bottom-0  
+            bg-background
+            border-t border-border/40
+            overflow-y-auto
+            z-40
+          "
+        >
           <nav className="container grid gap-4 py-4 px-4 max-w-7xl mx-auto">
             {/* Mobile subscribe */}
             <form onSubmit={handleSubscribe} className="space-y-2">
@@ -255,26 +302,90 @@ export function SiteHeader() {
               </div>
             </form>
 
+            {/* Mobile search link */}
+            <MobileNavLink
+              href="/search"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <Search className="inline-block h-5 w-5 mr-2" />
+              Search
+            </MobileNavLink>
+
             <MobileNavSection title="Gotta Do">
-              <MobileNavLink href="/product">Product</MobileNavLink>
-              <MobileNavLink href="/dataprotection">Data Protection</MobileNavLink>
-              <MobileNavLink href="/portfolio">Portfolio</MobileNavLink>
+              <MobileNavLink
+                href="/product"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Product
+              </MobileNavLink>
+              <MobileNavLink
+                href="/dataprotection"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Data Protection
+              </MobileNavLink>
+              <MobileNavLink
+                href="/portfolio"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Portfolio
+              </MobileNavLink>
             </MobileNavSection>
 
             <MobileNavSection title="Wanna Do">
-              <MobileNavLink href="/cook">Cook</MobileNavLink>
-              <MobileNavLink href="/write">Write</MobileNavLink>
-              <MobileNavLink href="/help">Help</MobileNavLink>
+              <MobileNavLink
+                href="/cook"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Cook
+              </MobileNavLink>
+              <MobileNavLink
+                href="/write"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Write
+              </MobileNavLink>
+              <MobileNavLink
+                href="/help"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Help
+              </MobileNavLink>
             </MobileNavSection>
 
             <MobileNavSection title="Preach">
-              <MobileNavLink href="/books">Books</MobileNavLink>
-              <MobileNavLink href="/podcasts">Podcasts</MobileNavLink>
-              <MobileNavLink href="/articles">Articles</MobileNavLink>
-              <MobileNavLink href="/media">Media</MobileNavLink>
+              <MobileNavLink
+                href="/books"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Books
+              </MobileNavLink>
+              <MobileNavLink
+                href="/podcasts"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Podcasts
+              </MobileNavLink>
+              <MobileNavLink
+                href="/articles"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Articles
+              </MobileNavLink>
+              <MobileNavLink
+                href="/media"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Media
+              </MobileNavLink>
             </MobileNavSection>
 
-            <MobileNavLink href="/touchbase">Touch Base</MobileNavLink>
+            <MobileNavLink
+              href="/touchbase"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Touch Base
+            </MobileNavLink>
           </nav>
         </div>
       )}
@@ -349,13 +460,16 @@ const MobileNavSection = ({
 const MobileNavLink = ({
   href,
   children,
+  onClick,
 }: {
   href: string
   children: React.ReactNode
+  onClick?: () => void
 }) => {
   return (
     <Link
       href={href}
+      onClick={onClick}
       className="block rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
     >
       {children}

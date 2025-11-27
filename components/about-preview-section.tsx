@@ -34,14 +34,6 @@ export function AboutPreviewSection() {
             on clear thinking, deep listening, and decisive execution.
           </p>
 
-          <div className="pt-4">
-            <ParticleButton size="lg" asChild>
-              <Link href="/preach">
-                Read my full story
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </ParticleButton>
-          </div>
         </div>
 
         {/* RIGHT SIDE — VISUAL CARD */}
