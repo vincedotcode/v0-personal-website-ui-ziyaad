@@ -1,13 +1,9 @@
+// app/layout.tsx
 import type { Metadata } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
-import { CookieConsent } from "@/components/cookie-consent"
-import { ThemeProvider } from "@/components/theme-provider"
-import { AnalyticsProvider } from "@/components/analytics-provider"
 import "./globals.css"
-import { NewsletterPopup } from "@/components/newsletter-popup"
+import { ClientRoot } from "./client-root"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -44,7 +40,7 @@ export const metadata: Metadata = {
     locale: "en_GB",
     images: [
       {
-        url: "/images/og-image.jpg", // make sure this file exists
+        url: "/images/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Ziyaad Ben Eydatoula – Product Management Consultant",
@@ -113,21 +109,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${_geist.className} antialiased`}>
-     
-        <ThemeProvider defaultTheme="dark" storageKey="zi-portfolio-theme">
-        <NewsletterPopup mode="once" /> {/* or "always" */}
-          <SiteHeader />
-          <main className="min-h-screen">{children}</main>
-          <SiteFooter />
-          <CookieConsent />
-        </ThemeProvider>
-
-        <AnalyticsProvider gaId={GA_ID} />
+        <ClientRoot>{children}</ClientRoot>
         <Analytics />
       </body>
     </html>

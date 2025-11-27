@@ -7,6 +7,7 @@ import React from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getPostBySlug, getPostsByTag, StrapiPost, getMediaUrl } from "@/lib/strapi";
+import { MarkdownImage } from "@/components/markdown-image";
 
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -111,10 +112,7 @@ function PostContent({ content }: { content: string }) {
         ol: ({ children }) => <ol className="list-decimal list-inside space-y-3 my-6 text-white/80">{children}</ol>,
         blockquote: ({ children }) => <blockquote className="border-l-4 border-amber-500/50 bg-amber-500/10 px-6 py-4 rounded-r-2xl my-8 text-white/70">{children}</blockquote>,
         img: ({ ...props }) => (
-          <figure className="my-8">
-            <img {...props} className="w-full rounded-2xl border border-white/10 shadow-lg" />
-            {props.alt && <figcaption className="mt-3 text-center text-sm text-white/50">{props.alt}</figcaption>}
-          </figure>
+          <MarkdownImage {...props} />
         ),
       }}>
         {content}

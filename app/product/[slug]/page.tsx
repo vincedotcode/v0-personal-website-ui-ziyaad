@@ -5,6 +5,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import { MarkdownImage } from "@/components/markdown-image";
 import remarkGfm from "remark-gfm";
 
 import {
@@ -204,18 +205,8 @@ function PostContent({ content }: { content: string }) {
                 </pre>
               )
             ),
-            img: ({ node, ...props }: any) => (
-              <figure className="my-8">
-                <img
-                  {...props}
-                  className="w-full rounded-2xl border border-white/10 shadow-lg"
-                />
-                {props.alt && (
-                  <figcaption className="mt-3 text-center text-sm text-white/50">
-                    {props.alt}
-                  </figcaption>
-                )}
-              </figure>
+            img: ({ ...props }: any) => (
+              <MarkdownImage {...props} />
             ),
             a: ({ children, href, ...props }: any) => (
               <a

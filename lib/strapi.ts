@@ -92,7 +92,9 @@ async function strapiFetch<T>(
   }
 
   const url = `${STRAPI_URL}${path}`;
-  console.log("[Strapi] GET", url);
+  if (process.env.NODE_ENV !== "production") {
+    console.log("[Strapi] GET", url);
+  }
 
   const normalizedTags = Array.from(
     new Set(cacheTags.filter((tag): tag is string => Boolean(tag))),

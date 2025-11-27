@@ -1,3 +1,6 @@
+"use client";
+
+import Image from "next/image";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 export type LogoItem =
@@ -324,6 +327,9 @@ export const LogoLoop = React.memo<LogoLoopProps>(
         }
 
         const isNodeItem = 'node' in item;
+        const logoSrc = (item as any).src as string | undefined;
+        const logoWidth = (item as any).width ?? 180;
+        const logoHeight = (item as any).height ?? 60;
 
         const content = isNodeItem ? (
           <span
@@ -337,8 +343,8 @@ export const LogoLoop = React.memo<LogoLoopProps>(
           >
             {(item as any).node}
           </span>
-        ) : (
-          <img
+        ) : logoSrc ? (
+          <Image
             className={cx(
               'h-[var(--logoloop-logoHeight)] w-auto block object-contain',
               '[-webkit-user-drag:none] pointer-events-none',
@@ -347,18 +353,19 @@ export const LogoLoop = React.memo<LogoLoopProps>(
               scaleOnHover &&
                 'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120'
             )}
-            src={(item as any).src}
-            srcSet={(item as any).srcSet}
-            sizes={(item as any).sizes}
-            width={(item as any).width}
-            height={(item as any).height}
+            src={logoSrc}
+            width={logoWidth}
+            height={logoHeight}
+            sizes={(item as any).sizes ?? '20vw'}
             alt={(item as any).alt ?? ''}
             title={(item as any).title}
             loading="lazy"
-            decoding="async"
             draggable={false}
+            unoptimized
+            style={{ height: 'var(--logoloop-logoHeight)', width: 'auto' }}
+            loader={({ src }) => src}
           />
-        );
+        ) : null;
 
         const itemAriaLabel = isNodeItem
           ? ((item as any).ariaLabel ?? (item as any).title)

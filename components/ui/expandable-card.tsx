@@ -2,6 +2,7 @@
 
 import React, { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import Image from "next/image";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 
 type ExpandableCard = {
@@ -18,6 +19,7 @@ export function ExpandableCardDemo({
 }: {
   cards?: ExpandableCard[];
 }) {
+  const passthroughLoader = ({ src }: { src: string }) => src;
   const [active, setActive] = useState<ExpandableCard | null>(null);
   const ref = useRef<HTMLDivElement>(null);
   const id = useId();
@@ -77,12 +79,16 @@ export function ExpandableCardDemo({
               className="w-full max-w-[500px] h-full md:h-fit md:max-h-[90%] flex flex-col bg-white dark:bg-neutral-900 sm:rounded-3xl overflow-hidden"
             >
               <motion.div layoutId={`image-${active.title}-${id}`}>
-                <img
+                <Image
                   width={200}
                   height={200}
                   src={active.src || "/placeholder.svg"}
                   alt={active.title}
                   className="w-full h-80 lg:h-80 sm:rounded-tr-lg sm:rounded-tl-lg object-cover object-top"
+                  sizes="(min-width: 1024px) 500px, 100vw"
+                  loading="lazy"
+                  unoptimized={Boolean(active.src && active.src.startsWith("http"))}
+                  loader={passthroughLoader}
                 />
               </motion.div>
 
@@ -142,12 +148,16 @@ export function ExpandableCardDemo({
           >
             <div className="flex gap-4 flex-col md:flex-row">
               <motion.div layoutId={`image-${card.title}-${id}`}>
-                <img
+                <Image
                   width={100}
                   height={100}
                   src={card.src || "/placeholder.svg"}
                   alt={card.title}
                   className="h-40 w-40 md:h-14 md:w-14 rounded-lg object-cover object-top"
+                  sizes="(min-width: 768px) 100px, 160px"
+                  loading="lazy"
+                  unoptimized={Boolean(card.src && card.src.startsWith("http"))}
+                  loader={passthroughLoader}
                 />
               </motion.div>
               <div>

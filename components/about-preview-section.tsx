@@ -1,8 +1,6 @@
 "use client"
 
-import { ArrowRight } from "lucide-react"
-import Link from "next/link"
-import { ParticleButton } from "@/components/particle-button"
+import Image from "next/image"
 
 export function AboutPreviewSection() {
   return (
@@ -41,10 +39,14 @@ export function AboutPreviewSection() {
           <div className="absolute -inset-4 rounded-3xl bg-primary/20 blur-3xl opacity-40" />
 
           <div className="relative rounded-3xl overflow-hidden border border-border/60 bg-background/60 backdrop-blur-md shadow-xl">
-            <img
+            <Image
               src="/hero-image.jpg"
               alt="Zi portrait"
+              width={998}
+              height={1308}
               className="w-full h-[420px] object-cover object-center scale-[1.02]"
+              sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 100vw"
+              loading="lazy"
             />
 
             <div className="p-6 space-y-2 bg-background/80 border-t border-border/50 backdrop-blur-sm">
