@@ -8,7 +8,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getPostBySlug, getPostsByTag, StrapiPost, getMediaUrl } from "@/lib/strapi";
 
-export const dynamic = "force-dynamic";
 
 type PageProps = { params: Promise<{ slug: string }> };
 
@@ -352,7 +351,7 @@ export default async function PodcastPage({ params }: PageProps) {
             </article>
           )}
 
-          <SubscribeBox />
+        
         </div>
 
         <RelatedEpisodes currentPostId={post.id} />

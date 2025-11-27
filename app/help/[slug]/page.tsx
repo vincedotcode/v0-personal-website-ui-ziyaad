@@ -6,7 +6,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { getPostBySlug, getPostsByTag, StrapiPost, getMediaUrl } from "@/lib/strapi";
 
-export const dynamic = "force-dynamic";
 
 type PageProps = { params: Promise<{ slug: string }> };
 

@@ -14,7 +14,6 @@ import {
   getMediaUrl,
 } from "@/lib/strapi";
 
-export const dynamic = "force-dynamic";
 
 type ProductPostPageProps = {
   params: Promise<{ slug: string }>;

@@ -58,6 +58,19 @@ const STRAPI_URL =
 
 const STRAPI_API_TOKEN = process.env.STRAPI_API_TOKEN;
 
+export const STRAPI_CACHE_TAGS = {
+  posts: "strapi:posts",
+  tags: "strapi:tags",
+} as const;
+
+export const STRAPI_CACHE_TAG_PREFIX = "strapi:tag:";
+export const STRAPI_CACHE_POST_PREFIX = "strapi:post:";
+
+type StrapiFetchOptions = {
+  cacheTags?: string[];
+  init?: RequestInit;
+};
+
 /**
  * Helper to get an absolute media URL from Strapi.
  */
@@ -68,11 +81,11 @@ export function getMediaUrl(media?: StrapiMedia | null): string | null {
 }
 
 /**
- * Universal Strapi fetcher with auth + no-store caching + logging
+ * Universal Strapi fetcher with auth + cache tagging for ISR/on-demand revalidation.
  */
 async function strapiFetch<T>(
   path: string,
-  options: RequestInit = {},
+  { cacheTags = [], init }: StrapiFetchOptions = {},
 ): Promise<StrapiListResponse<T>> {
   if (!STRAPI_URL) {
     throw new Error("❌ NEXT_PUBLIC_STRAPI_URL is not defined");
@@ -81,13 +94,19 @@ async function strapiFetch<T>(
   const url = `${STRAPI_URL}${path}`;
   console.log("[Strapi] GET", url);
 
+  const normalizedTags = Array.from(
+    new Set(cacheTags.filter((tag): tag is string => Boolean(tag))),
+  );
+  const shouldUseCache = normalizedTags.length > 0;
+
   const res = await fetch(url, {
-    ...options,
-    cache: "no-store",
+    ...init,
+    cache: shouldUseCache ? "force-cache" : "no-store",
+    next: shouldUseCache ? { tags: normalizedTags } : undefined,
     headers: {
       "Content-Type": "application/json",
       ...(STRAPI_API_TOKEN ? { Authorization: `Bearer ${STRAPI_API_TOKEN}` } : {}),
-      ...(options.headers || {}),
+      ...(init?.headers || {}),
     },
   });
 
@@ -119,7 +138,12 @@ export async function getPostsByTag(
     "populate[1]": "featuredImage",
   });
 
-  return strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`);
+  return strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`, {
+    cacheTags: [
+      STRAPI_CACHE_TAGS.posts,
+      `${STRAPI_CACHE_TAG_PREFIX}${tagSlug}`,
+    ],
+  });
 }
 
 /**
@@ -147,7 +171,12 @@ export async function getPostBySlug(slug: string | undefined | null) {
     "populate[1]": "featuredImage",
   });
 
-  const res = await strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`);
+  const res = await strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`, {
+    cacheTags: [
+      STRAPI_CACHE_TAGS.posts,
+      `${STRAPI_CACHE_POST_PREFIX}${slug}`,
+    ],
+  });
 
   return res.data[0] ?? null;
 }
@@ -156,7 +185,9 @@ export async function getPostBySlug(slug: string | undefined | null) {
  * List all tags (optional, if needed for UI)
  */
 export async function getAllTags() {
-  return strapiFetch<StrapiTag>(`/api/tags`);
+  return strapiFetch<StrapiTag>(`/api/tags`, {
+    cacheTags: [STRAPI_CACHE_TAGS.tags],
+  });
 }
 
 // Top-level section tags that have their own directories in /app
@@ -210,5 +241,7 @@ export async function searchPosts(
     params.set("filters[$or][2][content][$containsi]", trimmed)
   }
 
-  return strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`)
+  return strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`, {
+    cacheTags: [STRAPI_CACHE_TAGS.posts],
+  })
 }

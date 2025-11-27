@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPostsByTag, StrapiPost, getMediaUrl } from "@/lib/strapi";
 
-export const dynamic = "force-dynamic";
 
 type SearchParams = {
   page?: string;
