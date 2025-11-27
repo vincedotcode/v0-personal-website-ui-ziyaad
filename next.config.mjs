@@ -7,7 +7,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    optimized: true,
+    unoptimized: false,
   },
 }
 
