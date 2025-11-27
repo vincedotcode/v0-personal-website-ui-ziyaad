@@ -1,5 +1,6 @@
 // app/touchbase/page.tsx
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import { TouchBaseForm } from "./touchbase-form"
 
 export const metadata: Metadata = {
@@ -21,7 +22,9 @@ export default function Page() {
       {/* <RippleGridBackground /> */}
 
       <div className="container mx-auto max-w-4xl px-4 md:px-6 lg:px-8 py-16 md:py-24">
-        <TouchBaseForm />
+        <Suspense fallback={null}>
+          <TouchBaseForm />
+        </Suspense>
       </div>
     </div>
   )
