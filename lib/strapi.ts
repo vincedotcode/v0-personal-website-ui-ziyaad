@@ -220,28 +220,47 @@ export function getPrimarySectionTagSlug(post: StrapiPost): string | null {
  * Searches title, excerpt, and content (case-insensitive)
  * Populates tags + featuredImage so we can build correct URLs.
  */
-export async function searchPosts(
-  query: string,
-  page = 1,
-  pageSize = 20,
-) {
+export async function searchPostsAdvanced(options: {
+  query: string;
+  tagSlug?: string | null;
+  page?: number;
+  pageSize?: number;
+}) {
+  const { query, tagSlug, page = 1, pageSize = 20 } = options;
+
   const params = new URLSearchParams({
     "pagination[page]": String(page),
     "pagination[pageSize]": String(pageSize),
     "sort[0]": "publishedAt:desc",
     "populate[0]": "tags",
     "populate[1]": "featuredImage",
-  })
+  });
 
-  const trimmed = query.trim()
+  const trimmed = query.trim();
 
   if (trimmed) {
-    params.set("filters[$or][0][title][$containsi]", trimmed)
-    params.set("filters[$or][1][excerpt][$containsi]", trimmed)
-    params.set("filters[$or][2][content][$containsi]", trimmed)
+    params.set("filters[$or][0][title][$containsi]", trimmed);
+    params.set("filters[$or][1][excerpt][$containsi]", trimmed);
+    params.set("filters[$or][2][content][$containsi]", trimmed);
+  }
+
+  if (tagSlug) {
+    params.set("filters[tags][slug][$eq]", tagSlug);
   }
 
   return strapiFetch<StrapiPost>(`/api/posts?${params.toString()}`, {
     cacheTags: [STRAPI_CACHE_TAGS.posts],
-  })
+  });
+}
+
+/**
+ * Backwards-compatible wrapper (no tag filter).
+ * Used anywhere you already call searchPosts(q, page, pageSize).
+ */
+export async function searchPosts(
+  query: string,
+  page = 1,
+  pageSize = 20,
+) {
+  return searchPostsAdvanced({ query, page, pageSize });
 }
