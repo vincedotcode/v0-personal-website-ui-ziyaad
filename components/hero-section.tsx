@@ -145,7 +145,7 @@ export function HeroSection() {
                             handle="@The_Zi"
                             status="Available for product challenges"
                             contactText="Book a conversation"
-                            avatarUrl="/HeroImage.jpg"
+                            avatarUrl="/hero-image.jpg"
                             showUserInfo={true}
                             enableTilt={true}
                             enableMobileTilt={false}

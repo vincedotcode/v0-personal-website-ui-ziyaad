@@ -50,7 +50,7 @@ export function AboutPreviewSection() {
 
           <div className="relative rounded-3xl overflow-hidden border border-border/60 bg-background/60 backdrop-blur-md shadow-xl">
             <img
-              src="/heroimage.jpg"
+              src="/hero-image.jpg"
               alt="Zi portrait"
               className="w-full h-[420px] object-cover object-center scale-[1.02]"
             />
