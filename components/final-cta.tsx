@@ -2,10 +2,30 @@
 
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { useEffect, useState } from "react"
 import { ParticleButton } from "@/components/particle-button"
 import { trackEvent } from "@/lib/analytics"
 
 export function FinalCtaSection() {
+  const [resumeHref, setResumeHref] = useState("/assets/ziyaad-ben-eydatoula-cv.pdf")
+
+  useEffect(() => {
+    let mounted = true
+    fetch("/api/resume")
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!mounted) return
+        const url = data?.resource?.url as string | undefined
+        if (url) setResumeHref(url)
+      })
+      .catch(() => {
+        // swallow error and keep default asset
+      })
+    return () => {
+      mounted = false
+    }
+  }, [])
+
   const logCta = (label: string) =>
     trackEvent("final_cta_click", {
       event_category: "engagement",
@@ -47,8 +67,10 @@ export function FinalCtaSection() {
 
             <ParticleButton size="lg" variant="outline" asChild>
               <Link
-                href="/assets/ziyaad-ben-eydatoula-cv.pdf"
+                href={resumeHref}
                 target="_blank"
+                rel="noreferrer"
+                prefetch={false}
                 onClick={() => logCta("cv_download_footer")}
               >
                 Download C.V.

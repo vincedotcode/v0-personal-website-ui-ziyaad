@@ -2,7 +2,7 @@
 
 *Automatically synced with your [v0.app](https://v0.app) deployments*
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/vince-9318s-projects/v0-personal-website-ui)
+[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/ziyaad-9318s-projects/v0-personal-website-ui)
 [![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/hYcSSTGjoZq)
 
 ## Overview
@@ -14,7 +14,7 @@ Any changes you make to your deployed app will be automatically pushed to this r
 
 Your project is live at:
 
-**[https://vercel.com/vince-9318s-projects/v0-personal-website-ui](https://vercel.com/vince-9318s-projects/v0-personal-website-ui)**
+**[https://vercel.com/ziyaad-9318s-projects/v0-personal-website-ui](https://vercel.com/ziyaad-9318s-projects/v0-personal-website-ui)**
 
 ## Build your app
 

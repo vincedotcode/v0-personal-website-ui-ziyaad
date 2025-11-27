@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { ArrowRight } from "lucide-react"
+import { useEffect, useState } from "react"
 
 import { ParticleButton } from "@/components/particle-button"
 import { LayoutTextFlip } from "@/components/ui/layout-text-flip"
@@ -13,6 +14,25 @@ import { trackEvent } from "@/lib/analytics"
 
 export function HeroSection() {
     const router = useRouter()
+    const [resumeHref, setResumeHref] = useState("/assets/ziyaad-ben-eydatoula-cv.pdf")
+
+    useEffect(() => {
+        let isMounted = true
+        fetch("/api/resume")
+            .then((res) => res.ok ? res.json() : null)
+            .then((data) => {
+                if (!isMounted) return
+                const url = data?.resource?.url as string | undefined
+                if (url) setResumeHref(url)
+            })
+            .catch(() => {
+                // ignore and fall back to bundled asset
+            })
+        return () => {
+            isMounted = false
+        }
+    }, [])
+
     const logCta = (action: string) =>
         trackEvent("hero_cta_click", {
             event_category: "engagement",
@@ -109,8 +129,10 @@ export function HeroSection() {
 
                             <ParticleButton size="lg" variant="outline" asChild>
                                 <Link
-                                    href="/assets/ziyaad-ben-eydatoula-cv.pdf"
+                                    href={resumeHref}
                                     target="_blank"
+                                    rel="noreferrer"
+                                    prefetch={false}
                                     onClick={() => logCta("cv_download_hero")}
                                 >
                                     Download C.V.

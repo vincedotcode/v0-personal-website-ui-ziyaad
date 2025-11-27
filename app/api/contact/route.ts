@@ -8,12 +8,12 @@ export const runtime = "nodejs"
 // ---------- Resend + domain config ----------
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Use sender addresses on vincedotcode.com (must be verified in Resend)
-const CONTACT_ADMIN_EMAIL = process.env.CONTACT_ADMIN_EMAIL || "vince@vincedotcode.com"
+// Use sender addresses on ziyaadbeneydatoula.com (must be verified in Resend)
+const CONTACT_ADMIN_EMAIL = process.env.CONTACT_ADMIN_EMAIL || "ziyaad@ziyaadbeneydatoula.com"
 const CONTACT_FROM_EMAIL =
-  process.env.CONTACT_FROM_EMAIL || "contact@vincedotcode.com"
+  process.env.CONTACT_FROM_EMAIL || "contact@ziyaadbeneydatoula.com"
 const CONTACT_AUTOREPLY_FROM =
-  process.env.CONTACT_AUTOREPLY_FROM || "no-reply@vincedotcode.com"
+  process.env.CONTACT_AUTOREPLY_FROM || "no-reply@ziyaadbeneydatoula.com"
 
 // ---------- Rate limiting config ----------
 const CONTACT_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000 // 1 hour
@@ -174,7 +174,7 @@ function validateContactBody(body: any): {
 
 /**
  * Email to Zi (admin side).
- * Now actually sends via Resend from vincedotcode.com.
+ * Now actually sends via Resend from ziyaadbeneydatoula.com.
  */
 async function sendEmailToZi(payload: ContactPayload) {
   const adminEmail = CONTACT_ADMIN_EMAIL
@@ -233,7 +233,7 @@ ${meetingPart}
 
 /**
  * Auto-reply to the user.
- * Also sent via Resend from vincedotcode.com.
+ * Also sent via Resend from ziyaadbeneydatoula.com.
  */
 async function sendAutoReplyToUser(payload: ContactPayload) {
   const fromEmail = CONTACT_AUTOREPLY_FROM
