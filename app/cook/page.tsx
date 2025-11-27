@@ -71,26 +71,24 @@ function RecipeCard({ post }: { post: StrapiPost }) {
       <div className="absolute inset-0 bg-gradient-to-br from-amber-600/10 via-transparent to-orange-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
       {mediaUrl && (
-        <div className="relative h-48 overflow-hidden bg-black/40">
-          <Image
-            src={mediaUrl}
-            alt={post.featuredImage?.alternativeText || post.title}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-          {post.format === "article" && (
-            <div className="absolute top-4 right-4 rounded-full bg-amber-500/20 border border-amber-500/40 px-3 py-1 text-xs text-amber-200 font-semibold">
-              Recipe
-            </div>
-          )}
-        </div>
-      )}
+  <div className="relative h-48 overflow-hidden bg-black/40">
+    <Image
+      src={mediaUrl}
+      alt={post.featuredImage?.alternativeText || post.title}
+      fill
+      className="object-cover group-hover:scale-105 transition-transform duration-500"
+    />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+    <div className="absolute top-4 right-4 rounded-full bg-amber-500/20 border border-amber-500/40 px-3 py-1 text-xs text-amber-200 font-semibold">
+      Recipe
+    </div>
+  </div>
+)}
 
       <div className="relative p-6 flex flex-col gap-4 flex-1">
         <div className="flex items-start justify-between gap-3">
           <h3 className="text-lg font-bold text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-amber-300 group-hover:to-orange-300 transition-all line-clamp-2 flex-1">
-            <Link href={`/product/${post.slug}`}>
+            <Link href={`/cook/${post.slug}`}>
               {post.title}
             </Link>
           </h3>

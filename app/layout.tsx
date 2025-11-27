@@ -8,7 +8,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AnalyticsProvider } from "@/components/analytics-provider"
 import "./globals.css"
 import { NewsletterPopup } from "@/components/newsletter-popup"
-import { GlobalLoadingOverlay } from "@/components/global-loading-overlay"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -119,7 +118,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${_geist.className} antialiased`}>
-        <GlobalLoadingOverlay />
+     
         <ThemeProvider defaultTheme="dark" storageKey="zi-portfolio-theme">
         <NewsletterPopup mode="once" /> {/* or "always" */}
           <SiteHeader />
