@@ -109,8 +109,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const themeInitScript = `(function(){try{var d=document.documentElement;var stored=localStorage.getItem('zi-portfolio-theme');var prefers=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';var theme=stored||'dark';if(theme==='system'){theme=prefers;}d.classList.remove('light','dark');d.classList.add(theme);}catch(e){}})();`
+
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
       <body className={`${_geist.className} antialiased`}>
         <ClientRoot>{children}</ClientRoot>
         <Analytics />
