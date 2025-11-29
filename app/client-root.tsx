@@ -16,6 +16,12 @@ type ClientRootProps = {
 export function ClientRoot({ children }: ClientRootProps) {
   const GA_ID = process.env.NEXT_PUBLIC_GA_ID
 
+  if (typeof window !== "undefined") {
+    console.log("[ClientRoot] GA_ID in browser:", GA_ID)
+  } else {
+    console.log("[ClientRoot] GA_ID on server:", GA_ID)
+  }
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="zi-portfolio-theme">
       {/* Popup */}
