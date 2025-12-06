@@ -18,6 +18,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Mail, Linkedin, Twitter } from "lucide-react"
 import { trackEvent } from "@/lib/analytics"
+import Cal, { getCalApi } from "@calcom/embed-react"
 
 // ---------- Types & constants ----------
 
@@ -72,6 +73,7 @@ interface FieldErrors {
 }
 
 type SuccessVariant = "meeting" | "no-meeting" | null
+
 const ENQUIRY_TEMPLATES: Record<EnquiryTypeValue, string> = {
   critique: "I'm interested in a product critique. ",
   building: "I'm interested in help with product building. ",
@@ -117,6 +119,7 @@ export function TouchBaseForm() {
   const [calendlyBooked, setCalendlyBooked] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
   const [preAppliedQuery, setPreAppliedQuery] = useState(false)
+  const [meetingType, setMeetingType] = useState<"30min" | "15min">("30min")
 
   const messageLength = form.message.length
 
@@ -131,22 +134,33 @@ export function TouchBaseForm() {
     }
   }
 
-  // Listen to Calendly postMessage events
+  // Listen to Cal.com booking events
   useEffect(() => {
-    function handleMessage(e: MessageEvent) {
-      if (!e.data || typeof e.data !== "object") return
-      const data = e.data as { event?: string; payload?: any }
-      if (data.event === "calendly.event_scheduled") {
-        setCalendlyBooked(true)
-        trackEvent("appointment_booked", {
-          event_category: "conversion",
-          event_label: "Calendly",
-        })
-      }
-    }
+    let isMounted = true
 
-    window.addEventListener("message", handleMessage)
-    return () => window.removeEventListener("message", handleMessage)
+    ;(async () => {
+      try {
+        const cal = await getCalApi()
+
+        cal("on", {
+          action: "bookingSuccessfulV2",
+          callback: () => {
+            if (!isMounted) return
+            setCalendlyBooked(true)
+            trackEvent("appointment_booked", {
+              event_category: "conversion",
+              event_label: "Cal.com",
+            })
+          },
+        })
+      } catch (err) {
+        console.error("Cal.com embed init failed", err)
+      }
+    })()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
   // Auto-dismiss success banner after 10 seconds
@@ -229,7 +243,8 @@ export function TouchBaseForm() {
       if (!newErrors.message) {
         for (const pattern of sqlPatterns) {
           if (pattern.test(message)) {
-            newErrors.message = "Your message contains disallowed SQL-like content."
+            newErrors.message =
+              "Your message contains disallowed SQL-like content."
             break
           }
         }
@@ -402,6 +417,20 @@ export function TouchBaseForm() {
     })
   }
 
+  // Build Cal.com config without undefined values
+  // Build Cal.com config without undefined values
+  const calConfig: Record<string, string | string[]> = {
+    theme: "light",
+  }
+  if (form.name) calConfig.name = form.name
+  if (form.email) calConfig.email = form.email
+  if (form.message) calConfig.notes = form.message
+
+  const calLink =
+    meetingType === "30min"
+      ? "ziyaadbeneydatoula/30min"
+      : "ziyaadbeneydatoula/15min"
+
   return (
     <div className="relative">
       <RippleGridBackground />
@@ -415,9 +444,9 @@ export function TouchBaseForm() {
               Let’s Chat About Your Product Challenges
             </h1>
             <p className="mx-auto max-w-2xl text-balance text-lg text-muted-foreground">
-              Tell me what you're working on, and I&apos;ll respond within 24 hours.
-              Want to jump on a call? Check the box below to schedule a time that
-              works for you.
+              Tell me what you're working on, and I&apos;ll respond within 24
+              hours. Want to jump on a call? Check the box below to schedule a
+              time that works for you.
             </p>
           </div>
 
@@ -425,8 +454,8 @@ export function TouchBaseForm() {
             <CardHeader className="space-y-2">
               <CardTitle>Contact Form</CardTitle>
               <CardDescription>
-                Share a bit about your product, where you&apos;re stuck, and what
-                success would look like. I&apos;ll take it from there.
+                Share a bit about your product, where you&apos;re stuck, and
+                what success would look like. I&apos;ll take it from there.
               </CardDescription>
             </CardHeader>
 
@@ -445,8 +474,8 @@ export function TouchBaseForm() {
                       </p>
                       <p className="mt-1">
                         You should have received a calendar invite with the
-                        meeting details and Google Meet link. If you don&apos;t see
-                        it, check your spam folder.
+                        meeting details and Google Meet link. If you don&apos;t
+                        see it, check your spam folder.
                       </p>
                       <p className="mt-1">Talk soon!</p>
                     </>
@@ -456,13 +485,13 @@ export function TouchBaseForm() {
                         ✓ Your message has been sent successfully!
                       </p>
                       <p className="mt-1">
-                        I&apos;ve received your message and will respond within 24
-                        hours. Keep an eye on your inbox (and spam folder, just in
-                        case).
+                        I&apos;ve received your message and will respond within
+                        24 hours. Keep an eye on your inbox (and spam folder,
+                        just in case).
                       </p>
                       <p className="mt-1">
-                        If you change your mind and want to schedule a call, you can
-                        book a time directly on my calendar anytime.
+                        If you change your mind and want to schedule a call, you
+                        can book a time directly on my calendar anytime.
                       </p>
                     </>
                   )}
@@ -633,7 +662,7 @@ export function TouchBaseForm() {
                   </div>
                 </div>
 
-                {/* Calendly (progressive disclosure, responsive) */}
+                {/* Cal.com (progressive disclosure, responsive) */}
                 <div
                   className={`transition-all duration-300 ${
                     calendlyVisible
@@ -645,30 +674,44 @@ export function TouchBaseForm() {
                     <div className="space-y-3 rounded-lg border bg-muted/40 p-3 sm:p-4 -mx-3 sm:mx-0">
                       <p className="text-sm text-muted-foreground">
                         Great! Select a time that works for you below. You&apos;ll
-                        receive a calendar invite and Google Meet link immediately
+                        receive a calendar invite and meeting link immediately
                         after booking.
                       </p>
-                      <div className="relative w-full max-w-full overflow-hidden">
-                        {/* Aspect-ratio box to keep iframe responsive */}
-                        <div className="absolute inset-0">
-                          <div
-                            className="calendly-inline-widget w-full h-full rounded-md overflow-hidden"
-                            data-url="https://calendly.com/ziyaad-b-eydatoula/30min"
-                            style={{
-                              minWidth: "0",
-                              width: "100%",
-                              height: "100%",
-                            }}
-                          />
-                        </div>
-                        <div className="invisible pt-[150%] sm:pt-[120%] lg:pt-[90%]" />
+
+                      {/* Switch between 30min / 15min */}
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={
+                            meetingType === "30min" ? "default" : "outline"
+                          }
+                          onClick={() => setMeetingType("30min")}
+                        >
+                          30 min session
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant={
+                            meetingType === "15min" ? "default" : "outline"
+                          }
+                          onClick={() => setMeetingType("15min")}
+                        >
+                          15 min intro
+                        </Button>
                       </div>
-                      {/* Calendly script */}
-                      <script
-                        type="text/javascript"
-                        src="https://assets.calendly.com/assets/external/widget.js"
-                        async
-                      />
+
+                      <div className="w-full max-w-full h-[600px] sm:h-[650px] lg:h-[700px] overflow-auto rounded-md">
+  <Cal
+    key={calLink} // force re-mount when meetingType changes
+    calLink={calLink}
+    style={{ width: "100%", height: "100%" }}
+    config={calConfig}
+  />
+</div>
+
+
                     </div>
                   )}
                 </div>
